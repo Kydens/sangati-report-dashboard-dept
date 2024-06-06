@@ -8,11 +8,11 @@
         <tbody>
             <tr>
                 <td class="font">Telah terima dari</td>
-                <td class="font">: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
+                <td class="font">: {{ $report->pengirim }} ({{ $report->pengirim_dept->nama_departemen }})</td>
             </tr>
             <tr>
                 <td class="font">Kepada</td>
-                <td class="font">: {{ $report->pengirim }} ({{ $report->pengirim_dept->nama_departemen }})</td>
+                <td class="font">: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
             </tr>
             <tr>
                 <td class="font">Berupa</td>
