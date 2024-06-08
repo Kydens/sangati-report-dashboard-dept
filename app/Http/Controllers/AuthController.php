@@ -22,7 +22,7 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        return back()->with('loginError', 'Login has failed!');
+        return back()->with('loginError', 'Email atau Password Salah!');
     }
 
     function logout(Request $request){

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="card">
+        <div class="card" style="min-height: 100vh;">
             <div class="card-body">
                 <div class="card-title d-flex justify-content-between mb-3">
                     <h4 class="fw-bold">Cetak Berkas</h4>
@@ -104,23 +104,12 @@
                                         </td>
                                         <td class="fw-bold">{{ $value->tanda_terimapinjam->jenis }}</td>
                                         <td>{{ $value->created_at }}</td>
-                                        <td class="d-flex flex-wrap gap-1">
+                                        <td>
                                             <a href="{{ route('report.show', $value->id) }}"
                                                 class="btn btn-dark d-flex align-items-center gap-2">
                                                 <i class="lni lni-printer"></i>
                                                 Cetak
                                             </a>
-                                            {{-- <a href="{{ route('report.edit', $value->id) }}" class="btn btn-primary">
-                                                <i class="lni lni-pencil"></i>
-                                            </a>
-                                            <form method="POST" action="{{ route('report.destroy', $value->id) }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btn-danger"
-                                                    onclick="return confirm('Report ingin dihapus?')">
-                                                    <i class="lni lni-trash-can"></i>
-                                                </button>
-                                            </form> --}}
                                         </td>
                                     </tr>
                                 @endforeach

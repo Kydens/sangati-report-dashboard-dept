@@ -15,8 +15,10 @@ class Departemen extends Model
     public function report_terimapinjam() {
         return $this->hasMany(Report_terimapinjam::class);
     }
-
     public function user() {
         return $this->hasMany(User::class);
+    }
+    public function report_userit() {
+        return $this->hasMany(Report_userit::class);
     }
 }

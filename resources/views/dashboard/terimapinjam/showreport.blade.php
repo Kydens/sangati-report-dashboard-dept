@@ -4,19 +4,22 @@
     <p class="text-center text-uppercase mb-0 text-decoration-underline fw-bold" style="font-size: 18px;">
         {{ $report->tanda_terimapinjam->jenis }}
     </p>
-    <table class="table table-borderless d-flex justify-content-start">
+    <table class="table table-borderless">
         <tbody>
             <tr>
-                <td class="font">Telah terima dari</td>
-                <td class="font">: {{ $report->pengirim }} ({{ $report->pengirim_dept->nama_departemen }})</td>
+                <td style="width: 1%; white-space: nowrap;">
+                    Telah terima dari
+                </td>
+                <td>: {{ $report->pengirim }}
+                    ({{ $report->pengirim_dept->nama_departemen }})</td>
             </tr>
             <tr>
-                <td class="font">Kepada</td>
-                <td class="font">: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
+                <td style="width: 1%; white-space: nowrap;">Kepada</td>
+                <td>: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
             </tr>
             <tr>
-                <td class="font">Berupa</td>
-                <td class="font">:
+                <td style="width: 1%; white-space: nowrap;">Berupa</td>
+                <td>:
                     @php
                         $items = $report->item
                             ->map(function ($item) {

@@ -79,7 +79,7 @@ class Report_terimapinjamController extends Controller
     {
         $perusahaans = Perusahaan::get();
         $berkass = Tanda_terimapinjam::get();
-        $departemens = Departemen::get();
+        $departemens = Departemen::where('id', '>=', 2)->get();
         return view('dashboard.terimapinjam.addreport', compact('perusahaans', 'berkass', 'departemens'));
     }
 
@@ -93,7 +93,7 @@ class Report_terimapinjamController extends Controller
             'pengirim' => 'required|string|max:255',
             'penerima' => 'required|string|max:255|different:pengirim',
             'pengirim_dept_id' => 'required',
-            'penerima_dept_id' => 'required|different:pengirim_dept_id',
+            'penerima_dept_id' => 'required',
             'perusahaan_id' => 'required',
             'tanda_terimapinjam_id' => 'required',
             'nama_item.*' => 'required|string|max:255',

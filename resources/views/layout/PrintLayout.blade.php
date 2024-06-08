@@ -28,7 +28,7 @@
             <div class="mb-3 d-flex justify-content-between">
                 <div class="d-flex gap-3 align-items-center">
                     <img src="{{ asset('storage/' . $report->perusahaan->image) }}" alt=""
-                        style="width: 180px; height: 100%">
+                        style="max-width: 180px; max-height: 65px; height: 100%">
                     <header class="d-flex flex-column justify-content-start">
                         <strong class="text-uppercase" style="font-size: 16px">
                             {{ $report->perusahaan->nama_perusahaan }}
@@ -82,7 +82,7 @@
             <div class="mb-3 d-flex justify-content-between">
                 <div class="d-flex gap-3 align-items-center">
                     <img src="{{ asset('storage/' . $report->perusahaan->image) }}" alt=""
-                        style="width: 180px; height: 100%">
+                        style="max-width: 180px; max-height: 65px; height: 100%">
                     <header class="d-flex flex-column justify-content-start">
                         <strong class="text-uppercase" style="font-size: 16px">
                             {{ $report->perusahaan->nama_perusahaan }}

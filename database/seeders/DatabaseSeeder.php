@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Departemen;
+use App\Models\Roles;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
@@ -28,11 +29,39 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::create([
+            'roles_id'=>1,
             'perusahaan_id'=>1,
             'departemen_id'=>1,
             'username'=>'admin',
             'email'=>'admin@admin.com',
             'password'=>bcrypt('admin123'),
+        ]);
+
+        User::create([
+            'roles_id'=>1,
+            'perusahaan_id'=>1,
+            'departemen_id'=>2,
+            'username'=>'nisa',
+            'email'=>'nisa@gmail.com',
+            'password'=>bcrypt('12345'),
+        ]);
+
+        User::create([
+            'roles_id'=>1,
+            'perusahaan_id'=>1,
+            'departemen_id'=>4,
+            'username'=>'venny',
+            'email'=>'venny@gmail.com',
+            'password'=>bcrypt('12345'),
+        ]);
+
+        User::create([
+            'roles_id'=>2,
+            'perusahaan_id'=>1,
+            'departemen_id'=>4,
+            'username'=>'zidan',
+            'email'=>'zidan@gmail.com',
+            'password'=>bcrypt('12345'),
         ]);
 
         Tanda_terimapinjam::create([
@@ -88,6 +117,14 @@ class DatabaseSeeder extends Seeder
 
         Departemen::create([
             'nama_departemen'=>'Operation',
+        ]);
+
+        Roles::create([
+            'nama_role'=>'Admin',
+        ]);
+
+        Roles::create([
+            'nama_role'=>'User',
         ]);
 
     }
