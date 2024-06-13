@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('pengirim_dept_id');
             $table->string('penerima');
             $table->foreignId('penerima_dept_id');
+            $table->timestamp('terakhir_cetak');
             $table->timestamps();
         });
     }

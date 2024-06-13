@@ -12,20 +12,8 @@ class Report_userit extends Model
 
     protected $guarded = ['id'];
 
-    protected $with = ['perusahaan', 'departemen', 'users'];
+    protected $with = ['perusahaan', 'departemen', 'users', 'jobs'];
 
-    public static function getStatuses(): array
-    {
-        return [
-            'Proses'=>'Proses',
-            'Done'=>'Done',
-        ];
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return \Carbon\Carbon::parse($value)->format('d M Y');
-    }
     public function users() {
         return $this->belongsTo(User::class, 'users_id');
     }
@@ -34,5 +22,8 @@ class Report_userit extends Model
     }
     public function perusahaan() {
         return $this->belongsTo(Perusahaan::class, 'user_req_perusahaan_id');
+    }
+    public function jobs() {
+        return $this->hasMany(Jobs::class, 'report_userit_id');
     }
 }

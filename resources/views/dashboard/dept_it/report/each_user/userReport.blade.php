@@ -30,7 +30,7 @@
                     @endif
                 </form>
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table table-bordered">
                         <thead>
                             <tr class="table-dark align-middle">
                                 <th scope="col" class="text-center">Tanggal</th>
@@ -43,20 +43,52 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($reportUserIT as $key => $value)
+                            @if ($reportUserIT->isEmpty())
                                 <tr>
-                                    <td style="width: 1%; white-space:nowrap">{{ $value->created_at }}</td>
-                                    <td>{{ $value->user_request }}</td>
-                                    <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                                    <td>{{ $value->departemen->nama_departemen }}</td>
-                                    <td>{{ $value->program }}</td>
-                                    <td>{{ $value->jenis_kegiatan }}</td>
-                                    <td class="{{ $value->status == 'Proses' ? 'table-warning text-center' : 'table-success text-center' }}"
-                                        style="width: 1%; white-space:nowrap">
-                                        {{ $value->status }}
-                                    </td>
+                                    <td colspan="7" class="text-center py-4">Data tidak ditemukan atau kosong</td>
                                 </tr>
-                            @endforeach
+                            @else
+                                @foreach ($reportUserIT as $key => $value)
+                                    <tr>
+                                        <td class="align-middle" style="width: 1%; white-space:nowrap; vertical-align:top;">
+                                            {{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}</td>
+                                        <td class="text-capitalize align-middle" style="vertical-align:top">
+                                            {!! $value->user_request !!}
+                                        </td>
+                                        <td class="align-middle" style="vertical-align:top">
+                                            {{ $value->perusahaan->nama_perusahaan }}</td>
+                                        <td class="align-middle text-center" style="vertical-align:top">
+                                            {{ $value->departemen->nama_departemen }}</td>
+                                        <td class="text-capitalize align-middle" style="vertical-align:top">
+                                            {!! $value->program !!}
+                                        </td>
+                                        <td class="p-0" style="vertical-align:top">
+                                            @php
+                                                $jobs = $value->jobs
+                                                    ->map(function ($job) {
+                                                        return "<div class='jenis-kegiatan text-capitalize p-2'>{$job->jenis_kegiatan}</div>";
+                                                    })
+                                                    ->toArray();
+                                            @endphp
+                                            {!! implode('', $jobs) !!}
+                                        </td>
+                                        <td class="p-0" style="vertical-align:top">
+                                            @php
+                                                $jobs = $value->jobs
+                                                    ->map(function ($job) {
+                                                        $class =
+                                                            $job->status == 'Done'
+                                                                ? 'bg-success bg-opacity-25'
+                                                                : 'bg-warning bg-opacity-25';
+                                                        return "<div class='status p-2 text-center $class'>{$job->status}</div>";
+                                                    })
+                                                    ->toArray();
+                                            @endphp
+                                            {!! implode('', $jobs) !!}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
 
@@ -65,4 +97,31 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('tr').each(function() {
+                var maxHeight = 0;
+                var jobTypes = $(this).find('.jenis-kegiatan');
+                var jobStatuses = $(this).find('.status');
+
+                jobTypes.each(function() {
+                    if ($(this).height() > maxHeight) {
+                        maxHeight = $(this).height();
+                    }
+                });
+
+                jobStatuses.each(function() {
+                    if ($(this).height() > maxHeight) {
+                        maxHeight = $(this).height();
+                    }
+                });
+
+                jobTypes.height(maxHeight);
+                jobStatuses.height(maxHeight);
+            });
+        });
+    </script>
 @endsection

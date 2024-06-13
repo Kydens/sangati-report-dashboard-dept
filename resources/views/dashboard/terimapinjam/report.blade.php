@@ -67,7 +67,7 @@
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <thead>
-                                <tr>
+                                <tr class="table-dark align-middle">
                                     <th scope="col">No</th>
                                     <th scope="col">Perusahaan</th>
                                     <th scope="col">Pengirim</th>
@@ -83,9 +83,11 @@
                                     <tr>
                                         <th scope="row">{{ $reports->firstItem() + $key }}</th>
                                         <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                                        <td>{{ $value->pengirim }}<br><small>({{ $value->pengirim_dept->nama_departemen }})</small>
+                                        <td class="text-capitalize">
+                                            {!! $value->pengirim !!}<br><small>({{ $value->pengirim_dept->nama_departemen }})</small>
                                         </td>
-                                        <td>{{ $value->penerima }}<br><small>({{ $value->penerima_dept->nama_departemen }})</small>
+                                        <td class="text-capitalize">
+                                            {!! $value->penerima !!}<br><small>({{ $value->penerima_dept->nama_departemen }})</small>
                                         </td>
                                         <td class="text-capitalize">
                                             @php
@@ -98,9 +100,8 @@
                                                         return "({$item->quantity}) {$item->nama_item}";
                                                     })
                                                     ->toArray();
-
-                                                echo implode(', ', $items);
                                             @endphp
+                                            {!! implode(', ', $items) !!}
                                         </td>
                                         <td class="fw-bold">{{ $value->tanda_terimapinjam->jenis }}</td>
                                         <td>{{ $value->created_at }}</td>

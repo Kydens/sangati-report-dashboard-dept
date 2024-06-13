@@ -19,45 +19,26 @@ class AllReportITController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request);
+        // dd($request->all());
         $perusahaans = Perusahaan::get();
         $departemens = Departemen::where('id', '>=', 2)->get();
         $query = Report_userit::query();
 
-        $monthInput = $request->input('month');
-        $weekInput = $request->input('week');
-        $companyRequest = $request->input('user_req_perusahaan');
-        $deptRequest = $request->input('user_req_departemen');
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $companyRequest = $request->user_req_perusahaan;
+        $deptRequest = $request->user_req_departemen;
 
-        if ($weekInput && !$monthInput) {
-            return redirect()->back()->with('error', 'Input Minggu tidak dapat kosong');
+        if (isset($start_date) && isset($end_date) && $start_date >= $end_date) {
+            return redirect()->route('weeklyIT.index')->with('error', 'Start Date Melebihi End Date');
         }
 
         if ($deptRequest == 1) {
             return redirect()->route('weeklyIT.index');
         }
 
-        if ($monthInput) {
-            $month = substr($monthInput, 5, 2);
-            $year = substr($monthInput, 0, 4);
-
-            $startOfMonth = Carbon::create($year, $month, 1);
-            $startOfWeek = $startOfMonth->copy()->addWeeks($weekInput - 1)->startOfWeek(Carbon::MONDAY);
-            $endOfWeek = $startOfWeek->copy()->endOfWeek(Carbon::SUNDAY);
-
-            if ($startOfWeek->month != $month) {
-                $startOfWeek = $startOfMonth;
-            }
-
-            if ($endOfWeek->month != $month) {
-                $endOfWeek = $startOfMonth->copy()->endOfMonth();
-            }
-
-            if (isset($weekInput) && ($weekInput != 0)) {
-                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
-            } else {
-                $query->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month);
-            }
+        if($start_date && $end_date) {
+            $query->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
         }
 
         if (isset($companyRequest) && ($companyRequest != 0)) {
@@ -68,7 +49,9 @@ class AllReportITController extends Controller
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        $reportAllUsersIT = $query->orderBy('created_at', 'ASC')->orderBy('user_req_perusahaan_id', 'ASC')->paginate(10);
+        // dd($query);
+
+        $reportAllUsersIT = $query->with('jobs')->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(10);
         return view('dashboard.dept_it.report.all_user.allReport', compact('reportAllUsersIT', 'perusahaans', 'departemens', 'request'));
     }
 
@@ -113,6 +96,7 @@ class AllReportITController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // dd($request->all());
         $validateData = $request->validate([
             'user_req_departemen_id'=>'required',
             'user_req_perusahaan_id'=>'required',
@@ -120,7 +104,11 @@ class AllReportITController extends Controller
             'program'=>'required|string|max:255',
             'jenis_kegiatan'=>'required|string|max:255',
             'status'=> 'required|in:' . implode(',', array_keys(Report_userit::getStatuses())),
+            'tanggal_pengerjaan'=>'required|date',
         ]);
+
+        // dd($request->all());
+        // dd($validateData);
 
         $reportAllUsersIT = Report_userit::findOrFail($id);
         $users_id = $reportAllUsersIT->users_id;
@@ -142,12 +130,12 @@ class AllReportITController extends Controller
 
     public function export_excel(Request $request)
     {
-        $fileName = 'Report-IT';
+        $fileName = 'ITReport';
 
-        $month = $request->input('month');
-        $week = $request->input('week');
-        $company = $request->input('user_req_perusahaan');
-        $dept = $request->input('user_req_departemen');
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $company = $request->user_req_perusahaan;
+        $dept = $request->user_req_departemen;
 
 
 
@@ -155,24 +143,24 @@ class AllReportITController extends Controller
             return redirect()->route('weeklyIT.index');
         }
 
-        if ($week) {
-            $fileName .= '_Minggu_' . $week;
+        if ($start_date) {
+            $fileName .= '_' . Carbon::parse($start_date)->format('d_M_Y');
         }
 
-        if ($month) {
-            $fileName .= '_Bulan_' . $month;
+        if ($end_date) {
+            $fileName .= '_-_' .  Carbon::parse($end_date)->format('d_M_Y');
         }
 
         if ($company && $company != 0) {
             $reportUserIT = Report_userit::with('perusahaan')->where('user_req_perusahaan_id', $company)->first();
 
-            $fileName .= '_Perusahaan_' . $reportUserIT->perusahaan->nama_perusahaan;
+            $fileName .= '_' . $reportUserIT->perusahaan->nama_perusahaan;
         }
 
         if ($dept && $dept != 0) {
             $reportUserIT = Report_userit::with('departemen')->where('user_req_departemen_id', $dept)->first();
 
-            $fileName .= '_Departemen_' . $reportUserIT->departemen->nama_perusahaan;
+            $fileName .= '_' . $reportUserIT->departemen->nama_perusahaan;
         }
 
         $fileName .= '.xlsx';

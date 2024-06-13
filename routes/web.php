@@ -41,10 +41,10 @@ Route::middleware(['auth'])->group(function() {
 
     // Report Weekly IT
     Route::middleware(['role:4,1'])->group(function() {
-        Route::get('/dashboard/weeklyIT', [AllReportITController::class, 'index'])->name('weeklyIT.index');
-        Route::get('/dashboard/weeklyIT/editReport/{id}', [AllReportITController::class, 'edit'])->name('weeklyIT.edit');
-        Route::post('/dashboard/weeklyIT/editReport/{id}', [AllReportITController::class, 'update'])->name('weeklyIT.update');
-        Route::get('/dashboard/weeklyIT/export', [AllReportITController::class, 'export_excel'])->name('weeklyIT.export');
+        Route::get('/dashboard/allReportIT', [AllReportITController::class, 'index'])->name('weeklyIT.index');
+        Route::get('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'edit'])->name('weeklyIT.edit');
+        Route::post('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'update'])->name('weeklyIT.update');
+        Route::get('/dashboard/allReportIT/export', [AllReportITController::class, 'export_excel'])->name('weeklyIT.export');
     });
 
     // Report IT

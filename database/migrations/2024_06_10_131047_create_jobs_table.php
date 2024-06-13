@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report_userit', function (Blueprint $table) {
+        Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('users_id');
-            $table->foreignId('user_req_perusahaan_id');
-            $table->foreignId('user_req_departemen_id');
-            $table->string('user_request');
-            $table->string('program');
-            $table->date('tanggal_pengerjaan');
+            $table->foreignId('report_userit_id');
+            $table->string('jenis_kegiatan');
+            $table->enum('status', ['Proses','Done']);
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('report_userits');
+        Schema::dropIfExists('jobs');
     }
 };

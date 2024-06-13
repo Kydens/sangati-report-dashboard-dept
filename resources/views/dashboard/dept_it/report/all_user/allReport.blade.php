@@ -9,8 +9,8 @@
                 </div>
                 <div class="card-text">
                     <form method="get" action="{{ route('weeklyIT.index') }}" id="filterForm">
-                        <div class="mb-2 form-group d-flex flex-column gap-2">
-                            <div class="row">
+                        <div class="mb-2 form-group d-flex flex-column gap-3">
+                            <div class="d-flex align-items-start gap-2">
                                 <div style="width:fit-content">
                                     <a class="btn btn-dark d-flex align-items-center gap-2"
                                         href="{{ route('weeklyIT.index') }}">
@@ -18,17 +18,24 @@
                                         Refresh
                                     </a>
                                 </div>
+                                <div style="width:fit-content">
+                                    <button class="btn btn-success d-flex align-items-center gap-2" onclick="excel()"
+                                        type="button">
+                                        <i class="lni lni-inbox"></i>
+                                        Export Excel
+                                    </button>
+                                </div>
                             </div>
                             <div class="d-flex gap-2">
-                                <div class="col-sm-1">
-                                    <label for="week">Minggu :</label>
-                                    <input type="number" class="form-control" name="week" min="1" max="4"
-                                        placeholder="1-4" value="{{ $request->get('week') ?? '' }}">
+                                <div class="col-sm-2">
+                                    <label for="week">Start Date :</label>
+                                    <input type="date" class="form-control" name="start_date"
+                                        value="{{ $request->get('start_date') ?? '' }}">
                                 </div>
                                 <div class="col-sm-2">
-                                    <label for="month">Bulan :</label>
-                                    <input type="month" class="form-control" name="month"
-                                        value="{{ $request->get('month') ?? '' }}">
+                                    <label for="month">End Date :</label>
+                                    <input type="date" class="form-control" name="end_date"
+                                        value="{{ $request->get('end_date') ?? '' }}">
                                 </div>
                                 <div class="col-sm-3">
                                     <label for="user_req_perusahaan">Perusahaan :</label>
@@ -59,24 +66,23 @@
                                 <div class="align-items-end d-flex" style="width:fit-content">
                                     <button class="btn btn-primary" onclick="formFilter()" type="button">Filter</button>
                                 </div>
-                                <div class="align-items-end d-flex" style="width:fit-content">
-                                    <button class="btn btn-success d-flex align-items-center gap-2" onclick="excel()"
-                                        type="button">
-                                        <i class="lni lni-inbox"></i>
-                                        Export Excel
-                                    </button>
-                                </div>
                             </div>
+                            @if (Session::has('error'))
+                                <small class="text text-danger">
+                                    <i class="lni lni-cross-circle"></i>
+                                    {{ session('error') }}
+                                </small>
+                            @endif
                         </div>
                     </form>
                     <div class="table-responsive">
-                        <table class="table align-middle">
+                        <table class="table table-bordered">
                             <thead>
-                                <tr class="table-dark align-middle">
+                                <tr class="table-dark align-middle text-center">
                                     <th scope="col" class="text-center">Tanggal</th>
-                                    <th scope="col" class="text-center">PIC Request</th>
                                     <th scope="col" class="text-center">Perusahaan PIC Request</th>
                                     <th scope="col" class="text-center">Program / Project</th>
+                                    <th scope="col" class="text-center">PIC Request</th>
                                     <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
                                     <th scope="col" class="text-center">Status</th>
                                     <th scope="col" class="text-center">PIC</th>
@@ -84,32 +90,65 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($reportAllUsersIT as $key => $value)
+                                @if ($reportAllUsersIT->isEmpty())
                                     <tr>
-                                        <td style="width: 1%; white-space:nowrap">{{ $value->created_at }}</td>
-                                        <td>
-                                            {{ $value->user_request }}
-                                            <br>
-                                            <small>({{ $value->departemen->nama_departemen }})</small>
-                                        </td>
-                                        <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                                        <td>{{ $value->program }}</td>
-                                        <td>{{ $value->jenis_kegiatan }}</td>
-                                        <td class="{{ $value->status == 'Proses' ? 'table-warning text-center' : 'table-success text-center' }}"
-                                            style="width: 1%; white-space:nowrap">
-                                            {{ $value->status }}
-                                        </td>
-                                        <td class="text-capitalize">{{ $value->users->username }}</td>
-                                        <td>
-                                            <a href="{{ route('weeklyIT.edit', $value->id) }}"
-                                                class="btn btn-dark d-flex align-items-center gap-2"
-                                                style="width:fit-content">
-                                                <i class="lni lni-pencil"></i>
-                                                Edit
-                                            </a>
-                                        </td>
+                                        <td colspan="8" class="text-center py-4">Data tidak ditemukan atau kosong</td>
                                     </tr>
-                                @endforeach
+                                @else
+                                    @foreach ($reportAllUsersIT as $key => $value)
+                                        <tr>
+                                            <td class="align-middle"
+                                                style="width: 1%; white-space:nowrap; vertical-align:top">
+                                                {{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}
+                                            </td>
+                                            <td class="align-middle" style="vertical-align:top">
+                                                {{ $value->perusahaan->nama_perusahaan }}
+                                            </td>
+                                            <td class="text-capitalize align-middle" style="vertical-align:top">
+                                                {!! $value->program !!}
+                                            </td>
+                                            <td class="text-capitalize align-middle" style="vertical-align:top">
+                                                {!! $value->user_request !!}
+                                                <br>
+                                                <small>({{ $value->departemen->nama_departemen }})</small>
+                                            </td>
+                                            <td class="p-0" style="vertical-align:top">
+                                                @php
+                                                    $jobs = $value->jobs
+                                                        ->map(function ($job) {
+                                                            return "<div class='jenis-kegiatan text-capitalize p-2'>{$job->jenis_kegiatan}</div>";
+                                                        })
+                                                        ->toArray();
+                                                @endphp
+                                                {!! implode('', $jobs) !!}
+                                            </td>
+                                            <td class="p-0" style="vertical-align:top">
+                                                @php
+                                                    $jobs = $value->jobs
+                                                        ->map(function ($job) {
+                                                            $class =
+                                                                $job->status == 'Done'
+                                                                    ? 'bg-success bg-opacity-25'
+                                                                    : 'bg-warning bg-opacity-25';
+                                                            return "<div class='status p-2 text-center $class d-block'>{$job->status}</div>";
+                                                        })
+                                                        ->toArray();
+                                                @endphp
+                                                {!! implode('', $jobs) !!}
+                                            </td>
+                                            <td class="text-capitalize align-middle">
+                                                {{ $value->users->username }}</td>
+                                            <td class="align-middle">
+                                                <a href="{{ route('weeklyIT.edit', $value->id) }}"
+                                                    class="btn btn-dark d-flex align-items-center gap-2"
+                                                    style="width:fit-content">
+                                                    <i class="lni lni-pencil"></i>
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
 
@@ -134,5 +173,28 @@
             form.action = "{{ route('weeklyIT.export') }}";
             form.submit();
         }
+
+        $(document).ready(function() {
+            $('tr').each(function() {
+                var maxHeight = 0;
+                var jobTypes = $(this).find('.jenis-kegiatan');
+                var jobStatuses = $(this).find('.status');
+
+                jobTypes.each(function() {
+                    if ($(this).height() > maxHeight) {
+                        maxHeight = $(this).height();
+                    }
+                });
+
+                jobStatuses.each(function() {
+                    if ($(this).height() > maxHeight) {
+                        maxHeight = $(this).height();
+                    }
+                });
+
+                jobTypes.height(maxHeight);
+                jobStatuses.height(maxHeight);
+            });
+        });
     </script>
 @endsection

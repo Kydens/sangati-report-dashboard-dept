@@ -13,24 +13,24 @@
     <tbody>
         @foreach ($reports as $key => $value)
             <tr>
-                <th scope="row">{{ $reports->firstItem() + $key }}</th>
+                <th scope="row">{{ $loop->iteration }}</th>
                 <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                <td>{{ $value->pengirim }}</td>
-                <td>{{ $value->penerima }}</td>
-                <td class="text-capitalize">
+                <td>{!! Str::ucfirst($value->pengirim) !!}</td>
+                <td>{!! Str::ucfirst($value->penerima) !!}</td>
+                <td>
                     @php
                         $items = $value->item
                             ->map(function ($item) {
                                 if ($item->detail) {
-                                    return "({$item->quantity}) {$item->nama_item} ({$item->detail})";
+                                    return Str::ucfirst("({$item->quantity}) {$item->nama_item} ({$item->detail})");
                                 }
 
-                                return "({$item->quantity}) {$item->nama_item}";
+                                return Str::ucfirst("({$item->quantity}) {$item->nama_item}");
                             })
                             ->toArray();
 
-                        echo implode(', ', $items);
                     @endphp
+                    {!! implode('<br />', $items) !!}
                 </td>
                 <td class="fw-bold">{{ $value->tanda_terimapinjam->jenis }}</td>
                 <td>{{ $value->created_at }}</td>

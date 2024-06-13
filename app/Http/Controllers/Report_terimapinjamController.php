@@ -26,9 +26,9 @@ class Report_terimapinjamController extends Controller
         $berkass = Tanda_terimapinjam::get();
         $query = Report_terimapinjam::query();
 
-        $monthInput = $request->input('month');
-        $weekInput = $request->input('week');
-        $berkasInput = $request->input('berkas');
+        $monthInput = $request->month;
+        $weekInput = $request->week;
+        $berkasInput = $request->berkas;
 
         if ($weekInput && !$monthInput) {
             return redirect()->back()->with('error', 'Minggu tidak dapat kosong');
@@ -129,6 +129,8 @@ class Report_terimapinjamController extends Controller
     public function show(string $id)
     {
         $report = Report_terimapinjam::with(['item', 'pengirim_dept', 'penerima_dept'])->findOrFail($id);
+        $report->terakhir_cetak = Carbon::now();
+        $report->save();
         return view('dashboard.terimapinjam.showreport', compact('report'));
     }
 

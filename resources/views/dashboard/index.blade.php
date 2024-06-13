@@ -35,7 +35,7 @@
                 @endif
                 @if (Auth::user()->departemen_id == 4)
                     <div class="card shadow-sm"
-                        style="width: 18rem; border-left:12px solid cornflowerblue; background-color:#f3f5f7;">
+                        style="width: 18rem; border-left:12px solid purple; background-color:#f3f5f7;">
                         <a href="{{ route('reportIT.index') }}">
                             <div class="card-body py-4">
                                 <h5 class="card-title text-dark">Report IT</h5>
