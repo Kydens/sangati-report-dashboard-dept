@@ -12,7 +12,7 @@
                         <div class="mb-2 form-group d-flex align-items-end gap-2">
                             <div class="" style="width:fit-content">
                                 <strong>Filter</strong>
-                                <a class="btn btn-dark d-flex align-items-center gap-2" href="/dashboard/terimapinjam">
+                                <a class="btn btn-dark d-flex align-items-center gap-2" href="{{ route('report.index') }}">
                                     <i class="lni lni-spinner-arrow"></i>
                                     Refresh
                                 </a>

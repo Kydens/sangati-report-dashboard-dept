@@ -12,7 +12,7 @@ class Report_userit extends Model
 
     protected $guarded = ['id'];
 
-    protected $with = ['perusahaan', 'departemen', 'users', 'jobs'];
+    protected $with = ['perusahaan', 'departemen', 'users', 'jobs', 'program'];
 
     public function users() {
         return $this->belongsTo(User::class, 'users_id');
@@ -25,5 +25,8 @@ class Report_userit extends Model
     }
     public function jobs() {
         return $this->hasMany(Jobs::class, 'report_userit_id');
+    }
+    public function program() {
+        return $this->belongsTo(Programs::class, 'programs_id');
     }
 }

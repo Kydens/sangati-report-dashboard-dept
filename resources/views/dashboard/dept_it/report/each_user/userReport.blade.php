@@ -60,7 +60,7 @@
                                         <td class="align-middle text-center" style="vertical-align:top">
                                             {{ $value->departemen->nama_departemen }}</td>
                                         <td class="text-capitalize align-middle" style="vertical-align:top">
-                                            {!! $value->program !!}
+                                            {!! $value->program->nama_program !!}
                                         </td>
                                         <td class="p-0" style="vertical-align:top">
                                             @php

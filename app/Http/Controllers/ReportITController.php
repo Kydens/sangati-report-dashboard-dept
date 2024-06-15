@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Departemen;
 use App\Models\Jobs;
 use App\Models\Perusahaan;
+use App\Models\Programs;
 use App\Models\Report_userit;
 
 use Illuminate\Http\Request;
@@ -30,7 +31,8 @@ class ReportITController extends Controller
         $statuses = Jobs::getStatuses();
         $departemens = Departemen::where('id', '>=', 2)->get();
         $perusahaans = Perusahaan::get();
-        return view('dashboard.dept_it.report.each_user.createUserReport', compact('statuses', 'departemens', 'perusahaans'));
+        $programs = Programs::orderby('nama_program', 'ASC')->get();
+        return view('dashboard.dept_it.report.each_user.createUserReport', compact('statuses', 'departemens', 'perusahaans', 'programs'));
     }
 
     /**
@@ -59,7 +61,7 @@ class ReportITController extends Controller
                 'user_req_perusahaan_id' => $validateData['user_req_perusahaan_id'][$key1],
                 'user_req_departemen_id' => $validateData['user_req_departemen_id'][$key1],
                 'user_request' => $user_request,
-                'program' => $validateData['program'][$key1],
+                'programs_id' => $validateData['program'][$key1],
                 'tanggal_pengerjaan' => $validateData['tanggal_pengerjaan'][$key1],
             ]);
 
@@ -109,5 +111,15 @@ class ReportITController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    // public function getPrograms(int $id)
+    // {
+    //     $programs = Programs::where('program_perusahaan_id', $id)->orderBy('nama_program', 'ASC')->get();
+    //     return response()->json($programs);
+    // }
+    public function getPrograms(int $perusahaanId, int $departemenId)
+    {
+        $programs = Programs::where('program_perusahaan_id', $perusahaanId)->where('program_departemen_id', $departemenId)->orderBy('nama_program', 'ASC')->get();
+        return response()->json($programs);
     }
 }

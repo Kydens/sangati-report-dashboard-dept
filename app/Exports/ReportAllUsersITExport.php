@@ -28,11 +28,14 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
     use RegistersEventListeners;
 
     private $request;
+    private $reportAllUsersIT;
 
     public function __construct(Request $request) {
         $this->request = $request;
+        $this->loadData();
     }
-    public function view(): View
+
+    private function loadData()
     {
         $query = Report_userit::query();
 
@@ -42,15 +45,16 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
         $deptRequest = $this->request->user_req_departemen;
 
         if (isset($start_date) && isset($end_date) && $start_date >= $end_date) {
-            return redirect()->back();
+            throw new \Exception('Start date must be earlier than end date');
         }
 
         if ($deptRequest == 1) {
-            return redirect()->route('weeklyIT.index');
+            throw new \Exception('Invalid department');
         }
 
         if($start_date && $end_date) {
-            $query->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
+            $query->whereDate('tanggal_pengerjaan', '>=', $start_date)
+                  ->whereDate('tanggal_pengerjaan', '<=', $end_date);
         }
 
         if (isset($companyRequest) && ($companyRequest != 0)) {
@@ -61,13 +65,20 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        $reportAllUsersIT = $query->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('created_at', 'ASC')->get();
-        return view('dashboard.dept_it.report.all_user.table', compact('reportAllUsersIT'));
+        $this->reportAllUsersIT = $query->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('created_at', 'ASC')->get();
     }
 
-    public static function afterSheet(AfterSheet $event) {
+    public function view(): View
+    {
+        return view('dashboard.dept_it.report.all_user.table', [
+            'reportAllUsersIT' => $this->reportAllUsersIT
+        ]);
+
+    }
+
+    public function afterSheet(AfterSheet $event) {
         $sheet =  $event->sheet->getDelegate();
-        $dataReport = Report_userit::orderBy('user_req_perusahaan_id', 'ASC')->orderBy('created_at', 'ASC')->get();
+        $dataReport = $this->reportAllUsersIT;
 
         $rowData = 2;
 

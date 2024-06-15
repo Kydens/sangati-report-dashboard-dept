@@ -1,29 +1,27 @@
-<table class="table">
+<table>
     <thead>
-        <tr class="table-dark align-middle text-center">
-            <th scope="col" class="text-center">Tanggal</th>
-            <th scope="col" class="text-center">Perusahaan PIC Request</th>
-            <th scope="col" class="text-center">Program / Project</th>
-            <th scope="col" class="text-center">PIC Request</th>
-            <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
-            <th scope="col" class="text-center">Status</th>
-            <th scope="col" class="text-center">PIC</th>
+        <tr>
+            <th>Tanggal</th>
+            <th>Perusahaan PIC Request</th>
+            <th>Program / Project</th>
+            <th>PIC Request</th>
+            <th>Jenis Kegiatan</th>
+            <th>Status</th>
+            <th>PIC</th>
         </tr>
     </thead>
     <tbody>
         @if ($reportAllUsersIT->isEmpty())
             <tr>
-                <td colspan="8" class="text-center py-4">Data tidak ditemukan atau kosong</td>
+                <td colspan="8" style="text-align: center">Data tidak ditemukan atau kosong</td>
             </tr>
         @else
             @foreach ($reportAllUsersIT as $key => $value)
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}</td>
                     <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                    <td>{!! Str::ucfirst($value->program) !!}</td>
-                    <td>
-                        {!! Str::ucfirst($value->user_request) !!}
-                        <br>
+                    <td>{!! $value->program->nama_program !!}</td>
+                    <td>{!! Str::ucfirst($value->user_request) !!}<br>
                         <small>({{ $value->departemen->nama_departemen }})</small>
                     </td>
                     <td>

@@ -11,30 +11,36 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($reports as $key => $value)
+        @if ($reports->isEmpty())
             <tr>
-                <th scope="row">{{ $loop->iteration }}</th>
-                <td>{{ $value->perusahaan->nama_perusahaan }}</td>
-                <td>{!! Str::ucfirst($value->pengirim) !!}</td>
-                <td>{!! Str::ucfirst($value->penerima) !!}</td>
-                <td>
-                    @php
-                        $items = $value->item
-                            ->map(function ($item) {
-                                if ($item->detail) {
-                                    return Str::ucfirst("({$item->quantity}) {$item->nama_item} ({$item->detail})");
-                                }
-
-                                return Str::ucfirst("({$item->quantity}) {$item->nama_item}");
-                            })
-                            ->toArray();
-
-                    @endphp
-                    {!! implode('<br />', $items) !!}
-                </td>
-                <td class="fw-bold">{{ $value->tanda_terimapinjam->jenis }}</td>
-                <td>{{ $value->created_at }}</td>
+                <td colspan="8" style="text-align: center">Data tidak ditemukan atau kosong</td>
             </tr>
-        @endforeach
+        @else
+            @foreach ($reports as $key => $value)
+                <tr>
+                    <th scope="row">{{ $loop->iteration }}</th>
+                    <td>{{ $value->perusahaan->nama_perusahaan }}</td>
+                    <td>{!! Str::ucfirst($value->pengirim) !!}</td>
+                    <td>{!! Str::ucfirst($value->penerima) !!}</td>
+                    <td>
+                        @php
+                            $items = $value->item
+                                ->map(function ($item) {
+                                    if ($item->detail) {
+                                        return Str::ucfirst("({$item->quantity}) {$item->nama_item} ({$item->detail})");
+                                    }
+
+                                    return Str::ucfirst("({$item->quantity}) {$item->nama_item}");
+                                })
+                                ->toArray();
+
+                        @endphp
+                        {!! implode('<br />', $items) !!}
+                    </td>
+                    <td class="fw-bold">{{ $value->tanda_terimapinjam->jenis }}</td>
+                    <td>{{ $value->created_at }}</td>
+                </tr>
+            @endforeach
+        @endif
     </tbody>
 </table>

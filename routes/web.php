@@ -43,7 +43,9 @@ Route::middleware(['auth'])->group(function() {
     Route::middleware(['role:4,1'])->group(function() {
         Route::get('/dashboard/allReportIT', [AllReportITController::class, 'index'])->name('weeklyIT.index');
         Route::get('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'edit'])->name('weeklyIT.edit');
-        Route::post('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'update'])->name('weeklyIT.update');
+        Route::get('/dashboard/allReportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('weeklyIT.getBarang');
+        Route::put('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'update'])->name('weeklyIT.update');
+        Route::delete('/dashboard/allReportIT/{id}', [AllReportITController::class, 'destroy'])->name('weeklyIT.destroy');
         Route::get('/dashboard/allReportIT/export', [AllReportITController::class, 'export_excel'])->name('weeklyIT.export');
     });
 
@@ -52,6 +54,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/dashboard/reportIT', [ReportITController::class, 'index'])->name('reportIT.index');
         Route::get('/dashboard/reportIT/addReport', [ReportITController::class, 'create'])->name('reportIT.create');
         Route::post('/dashboard/reportIT/addReport', [ReportITController::class, 'store'])->name('reportIT.store');
+        // Route::get('/dashboard/reportIT/program/{id}', [ReportITController::class, 'getPrograms'])->name('reportIT.getBarang');
+        Route::get('/dashboard/reportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('reportIT.getBarang');
     });
 
     // Logout

@@ -20,7 +20,7 @@
 
 <body>
     <div class="container-md" style="height:100vh; display:flex; flex-direction:column; justify-content:space-between">
-        <a class="btn btn-primary mb-3" href="/dashboard/terimapinjam" id="btn-dashboard"
+        <a class="btn btn-primary mb-3" href="{{ route('report.index') }}" id="btn-dashboard"
             style="display:none; width:fit-content;">
             Kembali ke Dashboard
         </a>

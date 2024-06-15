@@ -28,13 +28,14 @@ class TerimapinjamExport implements FromView, ShouldAutoSize, WithStyles, WithDe
     use RegistersEventListeners;
 
     private $request;
+    private $reports;
 
     public function __construct(Request $request) {
         $this->request = $request;
+        $this->loadData();
     }
 
-    public function view(): View
-    {
+    private function loadData() {
         $query = Report_terimapinjam::query();
 
         $monthInput = $this->request->month;
@@ -69,9 +70,14 @@ class TerimapinjamExport implements FromView, ShouldAutoSize, WithStyles, WithDe
 
         };
 
-        $reports = $query->with('item')->orderBy('created_at', 'DESC')->get();
+        $this->reports = $query->with('item')->orderBy('created_at', 'DESC')->get();
+    }
 
-        return view('dashboard.terimapinjam.table', compact('reports'));
+    public function view(): View
+    {
+        return view('dashboard.terimapinjam.table',[
+            'reports' => $this->reports
+        ]);
     }
 
     public function styles(Worksheet $sheet)
@@ -81,9 +87,9 @@ class TerimapinjamExport implements FromView, ShouldAutoSize, WithStyles, WithDe
         ];
     }
 
-     public static function afterSheet(AfterSheet $event) {
+     public function afterSheet(AfterSheet $event) {
         $sheet =  $event->sheet->getDelegate();
-        $dataReport = Report_terimapinjam::get();
+        $dataReport = $this->reports;
 
         $rowData = 2;
 

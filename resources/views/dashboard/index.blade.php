@@ -4,7 +4,7 @@
     <div class="p-3 bg-light">
         <h1 class="mb-0">Dashboard Utama</h1>
     </div>
-    <div class="container-fluid mt-4 mx-3">
+<div class="container-fluid mt-4 mx-3">
         <div class="row">
             @if (Session::has('error-unauthorized'))
                 <div class="alert alert-danger mb-3" role="alert">

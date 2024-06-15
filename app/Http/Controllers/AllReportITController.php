@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\ReportAllUsersITExport;
 use App\Models\Perusahaan;
+use App\Models\Programs;
 use App\Models\Report_userit;
 use App\Models\Departemen;
+use App\Models\Jobs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +31,7 @@ class AllReportITController extends Controller
         $companyRequest = $request->user_req_perusahaan;
         $deptRequest = $request->user_req_departemen;
 
-        if (isset($start_date) && isset($end_date) && $start_date >= $end_date) {
+        if (isset($start_date) && isset($end_date) && $start_date > $end_date) {
             return redirect()->route('weeklyIT.index')->with('error', 'Start Date Melebihi End Date');
         }
 
@@ -38,7 +40,7 @@ class AllReportITController extends Controller
         }
 
         if($start_date && $end_date) {
-            $query->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
+            $query->whereDate('tanggal_pengerjaan', '>=', $start_date)->whereDate('tanggal_pengerjaan', '<=', $end_date);
         }
 
         if (isset($companyRequest) && ($companyRequest != 0)) {
@@ -51,7 +53,7 @@ class AllReportITController extends Controller
 
         // dd($query);
 
-        $reportAllUsersIT = $query->with('jobs')->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(10);
+        $reportAllUsersIT = $query->with('jobs')->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(5);
         return view('dashboard.dept_it.report.all_user.allReport', compact('reportAllUsersIT', 'perusahaans', 'departemens', 'request'));
     }
 
@@ -84,11 +86,12 @@ class AllReportITController extends Controller
      */
     public function edit(string $id)
     {
-        $statuses = Report_userit::getStatuses();
+        $statuses = Jobs::getStatuses();
         $perusahaans = Perusahaan::get();
         $departemens = Departemen::where('id', '>=', 2)->get();
+        $programs = Programs::orderby('nama_program', 'ASC')->get();
         $reportAllUsersIT = Report_userit::findOrFail($id);
-        return view('dashboard.dept_it.report.each_user.editUserReport', compact('statuses', 'departemens', 'perusahaans', 'reportAllUsersIT'));
+        return view('dashboard.dept_it.report.each_user.editUserReport', compact('statuses', 'departemens', 'perusahaans', 'programs', 'reportAllUsersIT'));
     }
 
     /**
@@ -102,30 +105,46 @@ class AllReportITController extends Controller
             'user_req_perusahaan_id'=>'required',
             'user_request'=>'required|string|max:255',
             'program'=>'required|string|max:255',
-            'jenis_kegiatan'=>'required|string|max:255',
-            'status'=> 'required|in:' . implode(',', array_keys(Report_userit::getStatuses())),
+            'jenis_kegiatan.*'=>'required|string|max:255',
+            'status.*'=>'required|in:' . implode(',', array_keys(Jobs::getStatuses())),
             'tanggal_pengerjaan'=>'required|date',
         ]);
 
-        // dd($request->all());
         // dd($validateData);
 
         $reportAllUsersIT = Report_userit::findOrFail($id);
-        $users_id = $reportAllUsersIT->users_id;
 
-        $validateData['users_id'] = $users_id;
-        $reportAllUsersIT->update($validateData);
+        $reportAllUsersIT->update([
+            'user_req_perusahaan_id' => $validateData['user_req_perusahaan_id'],
+            'user_req_departemen_id' => $validateData['user_req_departemen_id'],
+            'user_request' => $validateData['user_request'],
+            'program' => $validateData['program'],
+            'tanggal_pengerjaan' => $validateData['tanggal_pengerjaan'],
+        ]);
 
+        $reportAllUsersIT->jobs()->delete();
 
-        return redirect('/dashboard/weeklyIT')->with('success', 'Report Telah Diedit');
+        foreach($validateData['jenis_kegiatan'] as $key => $jenis_kegiatan) {
+            $jobs = Jobs::create([
+                'report_userit_id' => $reportAllUsersIT->id,
+                'jenis_kegiatan' => $jenis_kegiatan,
+                'status' => $validateData['status'][$key],
+            ]);
+        }
+
+        return redirect()->route('weeklyIT.index')->with('success', 'Report Telah Diedit');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $report = Report_userit::findOrFail($id);
+        $report->delete();
+
+        return redirect()->route('weeklyIT.index')->with('remove', 'Report Terhapus');
     }
 
     public function export_excel(Request $request)
@@ -136,7 +155,6 @@ class AllReportITController extends Controller
         $end_date = $request->end_date;
         $company = $request->user_req_perusahaan;
         $dept = $request->user_req_departemen;
-
 
 
         if ($dept == 1) {
@@ -154,13 +172,17 @@ class AllReportITController extends Controller
         if ($company && $company != 0) {
             $reportUserIT = Report_userit::with('perusahaan')->where('user_req_perusahaan_id', $company)->first();
 
-            $fileName .= '_' . $reportUserIT->perusahaan->nama_perusahaan;
+            if($reportUserIT != null) {
+                $fileName .= '_' . $reportUserIT->perusahaan->nama_perusahaan;
+            }
         }
 
         if ($dept && $dept != 0) {
             $reportUserIT = Report_userit::with('departemen')->where('user_req_departemen_id', $dept)->first();
 
-            $fileName .= '_' . $reportUserIT->departemen->nama_perusahaan;
+            if($reportUserIT != null) {
+                $fileName .= '_' . $reportUserIT->departemen->nama_departemen;
+            }
         }
 
         $fileName .= '.xlsx';

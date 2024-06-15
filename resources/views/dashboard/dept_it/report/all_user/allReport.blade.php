@@ -8,6 +8,11 @@
                     <h4 class="fw-bold">Report IT</h4>
                 </div>
                 <div class="card-text">
+                    @if (Session::has('remove'))
+                        <div class="alert alert-danger">
+                            {{ session('remove') }}
+                        </div>
+                    @endif
                     <form method="get" action="{{ route('weeklyIT.index') }}" id="filterForm">
                         <div class="mb-2 form-group d-flex flex-column gap-3">
                             <div class="d-flex align-items-start gap-2">
@@ -85,7 +90,7 @@
                                     <th scope="col" class="text-center">PIC Request</th>
                                     <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
                                     <th scope="col" class="text-center">Status</th>
-                                    <th scope="col" class="text-center">PIC</th>
+                                    <th scope="col" class="text-center col-md-1">PIC</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -105,7 +110,7 @@
                                                 {{ $value->perusahaan->nama_perusahaan }}
                                             </td>
                                             <td class="text-capitalize align-middle" style="vertical-align:top">
-                                                {!! $value->program !!}
+                                                {!! $value->program->nama_program !!}
                                             </td>
                                             <td class="text-capitalize align-middle" style="vertical-align:top">
                                                 {!! $value->user_request !!}
@@ -130,21 +135,32 @@
                                                                 $job->status == 'Done'
                                                                     ? 'bg-success bg-opacity-25'
                                                                     : 'bg-warning bg-opacity-25';
-                                                            return "<div class='status p-2 text-center $class d-block'>{$job->status}</div>";
+                                                            return "<div class='status p-2 text-center $class'>{$job->status}</div>";
                                                         })
                                                         ->toArray();
                                                 @endphp
                                                 {!! implode('', $jobs) !!}
                                             </td>
-                                            <td class="text-capitalize align-middle">
+                                            <td class="text-capitalize align-middle text-center">
                                                 {{ $value->users->username }}</td>
-                                            <td class="align-middle">
+                                            <td class="align-middle d-flex gap-2">
                                                 <a href="{{ route('weeklyIT.edit', $value->id) }}"
                                                     class="btn btn-dark d-flex align-items-center gap-2"
                                                     style="width:fit-content">
                                                     <i class="lni lni-pencil"></i>
                                                     Edit
                                                 </a>
+                                                <form action="{{ route('weeklyIT.destroy', $value->id) }}" method="POST"
+                                                    class="btn btn-danger d-flex align-items-center gap-2"
+                                                    style="width:fit-content">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="d-flex align-items-center gap-2"
+                                                        style="background: none; border: none; color: inherit; cursor: pointer;">
+                                                        <i class="lni lni-trash-can"></i>
+                                                        Delete
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

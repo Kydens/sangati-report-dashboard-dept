@@ -22,4 +22,7 @@ class Perusahaan extends Model
     public function report_userit() {
         return $this->hasMany(Report_userit::class);
     }
+    public function program() {
+        return $this->hasMany(Programs::class);
+    }
 }

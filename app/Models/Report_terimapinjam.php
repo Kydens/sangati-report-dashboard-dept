@@ -31,11 +31,11 @@ class Report_terimapinjam extends Model
     }
     public function pengirim_dept()
     {
-        return $this->belongsTo(departemen::class, 'pengirim_dept_id');
+        return $this->belongsTo(Departemen::class, 'pengirim_dept_id');
     }
     public function penerima_dept()
     {
-        return $this->belongsTo(departemen::class, 'penerima_dept_id');
+        return $this->belongsTo(Departemen::class, 'penerima_dept_id');
     }
     public function getCreatedAtAttribute($value)
     {
