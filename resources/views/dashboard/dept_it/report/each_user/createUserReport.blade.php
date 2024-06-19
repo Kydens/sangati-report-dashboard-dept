@@ -53,7 +53,7 @@
                         <div class="col input-group">
                             <label class="input-group-text" for="program">Pilih</label>
                             <select class="form-control program-select" id="program-0" name="program[]" required>
-                                <option value="" selected>-- Program / Project --</option>
+                                <option value="" required>-- Program / Project --</option>
                             </select>
                         </div>
                         <div class="d-flex flex-column">

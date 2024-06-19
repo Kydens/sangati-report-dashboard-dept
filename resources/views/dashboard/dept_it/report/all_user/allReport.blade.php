@@ -90,7 +90,7 @@
                                     <th scope="col" class="text-center">PIC Request</th>
                                     <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
                                     <th scope="col" class="text-center">Status</th>
-                                    <th scope="col" class="text-center col-md-1">PIC</th>
+                                    <th scope="col" class="text-center">PIC</th>
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -191,7 +191,7 @@
         }
 
         $(document).ready(function() {
-            $('tr').each(function() {
+            $('table tbody tr').each(function() {
                 var maxHeight = 0;
                 var jobTypes = $(this).find('.jenis-kegiatan');
                 var jobStatuses = $(this).find('.status');

@@ -62,8 +62,7 @@
                             <div class="col input-group">
                                 <label class="input-group-text" for="program">Pilih</label>
                                 <select class="form-control" id="program" name="program" required>
-                                    <option value="{{ $reportAllUsersIT->program_id }}">
-                                        {{ $reportAllUsersIT->nama_program }}</option>
+                                    <option value="" required>-- Program / Project --</option>
                                 </select>
                             </div>
                         </div>
@@ -138,16 +137,12 @@
                                 let $programSelect = $('#program');
                                 $programSelect.empty();
                                 $programSelect.append(
-                                    '<option value="">-- Program / Proyek --</option>'
+                                    '<option value="" required>-- Program / Project --</option>'
                                 );
                                 if (data) {
                                     $.each(data, function(key, program) {
-                                        let selected = (program.id ==
-                                            '{{ $reportAllUsersIT->program_id }}' ?
-                                            'selected' : '');
                                         $programSelect.append(
-                                            '<option value="{{ $reportAllUsersIT->program_id }}"' +
-                                            selected + '">' +
+                                            '<option value="' + program.id + '">' +
                                             program.nama_program + '</option>');
                                     });
                                 } else {

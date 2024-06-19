@@ -104,7 +104,7 @@ class AllReportITController extends Controller
             'user_req_departemen_id'=>'required',
             'user_req_perusahaan_id'=>'required',
             'user_request'=>'required|string|max:255',
-            'program'=>'required|string|max:255',
+            'program'=>'required',
             'jenis_kegiatan.*'=>'required|string|max:255',
             'status.*'=>'required|in:' . implode(',', array_keys(Jobs::getStatuses())),
             'tanggal_pengerjaan'=>'required|date',
@@ -118,7 +118,7 @@ class AllReportITController extends Controller
             'user_req_perusahaan_id' => $validateData['user_req_perusahaan_id'],
             'user_req_departemen_id' => $validateData['user_req_departemen_id'],
             'user_request' => $validateData['user_request'],
-            'program' => $validateData['program'],
+            'programs_id' => $validateData['program'],
             'tanggal_pengerjaan' => $validateData['tanggal_pengerjaan'],
         ]);
 

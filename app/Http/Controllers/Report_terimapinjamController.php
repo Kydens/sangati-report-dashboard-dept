@@ -77,9 +77,9 @@ class Report_terimapinjamController extends Controller
      */
     public function create()
     {
-        $perusahaans = Perusahaan::get();
+        $perusahaans = Perusahaan::where('id', '<', 6)->get();
         $berkass = Tanda_terimapinjam::get();
-        $departemens = Departemen::where('id', '>=', 2)->get();
+        $departemens = Departemen::where('id', '>=', 2)->where('id', '<=', 8)->get();
         return view('dashboard.terimapinjam.addreport', compact('perusahaans', 'berkass', 'departemens'));
     }
 

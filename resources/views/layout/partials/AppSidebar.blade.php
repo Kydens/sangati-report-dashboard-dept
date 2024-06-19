@@ -1,4 +1,4 @@
-<aside id="sidebar" class="expand">
+<aside id="sidebar">
     <div class="d-flex align-items-center">
         <button class="toggle-btn" type="button">
             <i class="lni lni-grid-alt"></i>
