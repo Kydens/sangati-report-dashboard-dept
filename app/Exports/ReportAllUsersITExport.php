@@ -65,7 +65,7 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        $this->reportAllUsersIT = $query->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('created_at', 'ASC')->get();
+        $this->reportAllUsersIT = $query->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->get();
     }
 
     public function view(): View
@@ -103,6 +103,10 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
 
             if ($row->user_req_perusahaan_id == 5) {
                 $color = '1568AB';
+            }
+
+            if ($row->user_req_perusahaan_id == 6) {
+                $color = 'EEECE1';
             }
 
 

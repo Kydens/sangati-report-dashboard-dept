@@ -107,7 +107,7 @@
 
                 if (req_perusahaan) {
                     $.ajax({
-                        url: `/dashboard/reportIT/departemen/${req_perusahaan}`,
+                        url: `{{ url('/dashboard/reportIT/departemen/${req_perusahaan}') }}`,
                         type: 'GET',
                         data: {
                             '_token': '{{ csrf_token() }}'
@@ -135,7 +135,7 @@
 
                 if (req_perusahaan && req_departemen) {
                     $.ajax({
-                        url: `/dashboard/reportIT/program/${req_perusahaan}/${req_departemen}`,
+                        url: `{{ url('/dashboard/reportIT/program/${req_perusahaan}/${req_departemen}') }}`,
                         type: 'GET',
                         data: {
                             '_token': '{{ csrf_token() }}'
@@ -249,9 +249,8 @@
             });
 
             $('#delete-report').click(function() {
-                $('.report-row').last().remove();
-
                 if (counter > 1) {
+                    $('.report-row').last().remove();
                     counter--;
                 }
             });

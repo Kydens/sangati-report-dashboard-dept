@@ -126,7 +126,7 @@
                 function loadDepartments(req_perusahaan) {
                     if (req_perusahaan) {
                         $.ajax({
-                            url: `/dashboard/reportIT/departemen/${req_perusahaan}`,
+                            url: `{{ url('/dashboard/reportIT/departemen/${req_perusahaan}') }}`,
                             type: 'GET',
                             data: {
                                 '_token': '{{ csrf_token() }}'
@@ -159,7 +159,7 @@
                 function loadPrograms(req_perusahaan, req_departemen) {
                     if (req_perusahaan && req_departemen) {
                         $.ajax({
-                            url: `/dashboard/reportIT/program/${req_perusahaan}/${req_departemen}`,
+                            url: `{{ url('/dashboard/reportIT/program/${req_perusahaan}/${req_departemen}') }}`,
                             type: 'GET',
                             data: {
                                 '_token': '{{ csrf_token() }}'
