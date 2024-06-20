@@ -42,10 +42,7 @@
                                     <label class="input-group-text" for="user_req_departemen_id">Pilih</label>
                                     <select class="form-control departemen-select" id="user_req_departemen_id-0"
                                         name="user_req_departemen_id[]" data-report-index="0" required>
-                                        <option value="" selected>-- Bagian Departemen --</option>
-                                        @foreach ($departemens as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nama_departemen }}</option>
-                                        @endforeach
+                                        <option value="" required>-- Bagian Departemen --</option>
                                     </select>
                                 </div>
                             </div>
@@ -105,6 +102,33 @@
         $(document).ready(function() {
             let counter = 1;
 
+            function loadDepartments(reportIndex) {
+                let req_perusahaan = $(`#user_req_perusahaan_id-${reportIndex}`).val();
+
+                if (req_perusahaan) {
+                    $.ajax({
+                        url: `/dashboard/reportIT/departemen/${req_perusahaan}`,
+                        type: 'GET',
+                        data: {
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            let $departemenSelect = $(`#user_req_departemen_id-${reportIndex}`);
+                            $departemenSelect.empty();
+                            $departemenSelect.append(
+                                '<option value="">-- Bagian Departemen --</option>');
+                            if (data) {
+                                $.each(data, function(key, departemen) {
+                                    $departemenSelect.append('<option value="' + departemen.id +
+                                        '">' + departemen.nama_departemen + '</option>');
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+
             function loadPrograms(reportIndex) {
                 let req_perusahaan = $(`#user_req_perusahaan_id-${reportIndex}`).val();
                 let req_departemen = $(`#user_req_departemen_id-${reportIndex}`).val();
@@ -121,7 +145,7 @@
                             let $programSelect = $(`#program-${reportIndex}`);
                             $programSelect.empty();
                             $programSelect.append(
-                                '<option value="" selected>-- Program / Project --</option>');
+                                '<option value="">-- Program / Project --</option>');
                             if (data) {
                                 $.each(data, function(key, program) {
                                     $programSelect.append('<option value="' + program.id +
@@ -133,7 +157,12 @@
                 }
             }
 
-            $(document).on('change', '.perusahaan-select, .departemen-select', function() {
+            $(document).on('change', '.perusahaan-select', function() {
+                let reportIndex = $(this).data('report-index');
+                loadDepartments(reportIndex);
+            });
+
+            $(document).on('change', '.departemen-select', function() {
                 let reportIndex = $(this).data('report-index');
                 loadPrograms(reportIndex);
             });

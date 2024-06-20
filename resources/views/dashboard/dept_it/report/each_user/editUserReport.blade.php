@@ -30,7 +30,7 @@
                                 <label for="item" class="form-label">Perusahaan PIC Request</label>
                                 <div class="input-group">
                                     <label class="input-group-text" for="user_req_perusahaan_id">Pilih</label>
-                                    <select class="form-control user_req_perusahaan_id" id="user_req_perusahaan_id"
+                                    <select class="form-control perusahaan-select" id="user_req_perusahaan_id"
                                         name="user_req_perusahaan_id" required>
                                         <option>-- Bagian Perusahaan --</option>
                                         @foreach ($perusahaans as $item)
@@ -45,14 +45,9 @@
                                 <label for="item" class="form-label">Dept. PIC Request</label>
                                 <div class="input-group">
                                     <label class="input-group-text" for="user_req_departemen_id">Pilih</label>
-                                    <select class="form-control user_req_departemen_id" id="user_req_departemen_id"
+                                    <select class="form-control departemen-select" id="user_req_departemen_id"
                                         name="user_req_departemen_id" required>
-                                        <option>-- Bagian Departemen --</option>
-                                        @foreach ($departemens as $item)
-                                            <option value="{{ $item->id }}"
-                                                {{ $item->id == $reportAllUsersIT->user_req_departemen_id ? 'selected' : '' }}>
-                                                {{ $item->nama_departemen }}</option>
-                                        @endforeach
+                                        <option value="" required>-- Bagian Departemen --</option>
                                     </select>
                                 </div>
                             </div>
@@ -124,6 +119,43 @@
             let counter = 1;
 
             $(document).ready(function() {
+
+                var req_perusahaan = $('#user_req_perusahaan_id').val()
+                var req_departemen = $('#user_req_departemen_id').val()
+
+                function loadDepartments(req_perusahaan) {
+                    if (req_perusahaan) {
+                        $.ajax({
+                            url: `/dashboard/reportIT/departemen/${req_perusahaan}`,
+                            type: 'GET',
+                            data: {
+                                '_token': '{{ csrf_token() }}'
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                // console.log(data);
+                                let $departemenSelect = $('#user_req_departemen_id');
+                                $departemenSelect.empty();
+                                $departemenSelect.append(
+                                    '<option value="" required>-- Bagian Departemen --</option>'
+                                );
+                                if (data) {
+                                    $.each(data, function(key, departemen) {
+                                        $('select[name="user_req_departemen_id"]')
+                                            .append(
+                                                // `<option value="${departemen.id}">${departemen.nama_departemen}</option>`
+                                                `<option value="${departemen.id}" ${`{{ $reportAllUsersIT->user_req_departemen_id }}` == departemen.id ? "selected" : ""}>${departemen.nama_departemen}</option>`
+                                            );
+                                    });
+                                }
+
+                                loadPrograms(req_perusahaan, $('#user_req_departemen_id')
+                                    .val());
+                            }
+                        });
+                    }
+                }
+
                 function loadPrograms(req_perusahaan, req_departemen) {
                     if (req_perusahaan && req_departemen) {
                         $.ajax({
@@ -134,33 +166,37 @@
                             },
                             dataType: 'json',
                             success: function(data) {
+                                // console.log(data);
                                 let $programSelect = $('#program');
                                 $programSelect.empty();
                                 $programSelect.append(
-                                    '<option value="" required>-- Program / Project --</option>'
-                                );
+                                    '<option value="">-- Program / Project --</option>');
                                 if (data) {
+                                    // console.log(data);
                                     $.each(data, function(key, program) {
-                                        $programSelect.append(
-                                            '<option value="' + program.id + '">' +
-                                            program.nama_program + '</option>');
+                                        // $programSelect.append('<option value="' +
+                                        //     program.id + '">' + program
+                                        //     .nama_program + '</option>');
+                                        $('select[name="program"]')
+                                            .append(
+                                                `<option value="${program.id}" ${`{{ $reportAllUsersIT->programs_id }}` == program.id ? "selected" : ""}>${program.nama_program}</option>`
+                                            );
                                     });
-                                } else {
-                                    $programSelect.append(
-                                        '<option value="" required>-- Kosong --</option>');
                                 }
                             }
                         });
                     }
                 }
 
-                // Initial load
-                loadPrograms($('#user_req_perusahaan_id').val(), $('#user_req_departemen_id').val());
+                loadDepartments(req_perusahaan);
 
-                // Load programs when perusahaan or departemen is changed
-                $('#user_req_perusahaan_id, #user_req_departemen_id').on('change', function() {
-                    let req_perusahaan = $('#user_req_perusahaan_id').val();
-                    let req_departemen = $('#user_req_departemen_id').val();
+                $('#user_req_perusahaan_id').on('change', function() {
+                    req_perusahaan = $(this).val();
+                    loadDepartments(req_perusahaan);
+                });
+
+                $('#user_req_departemen_id').on('change', function() {
+                    req_departemen = $(this).val();
                     loadPrograms(req_perusahaan, req_departemen);
                 });
             });

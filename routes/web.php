@@ -25,7 +25,7 @@ Route::get('/', function () {
 
 Route::middleware(['guest'])->group(function() {
     Route::get('/auth/v1/login', [AuthController::class, 'loginIndex'])->name('login');
-    Route::post('/auth/v1/login', [AuthController::class, 'loginPost']);
+    Route::post('/auth/v1/login', [AuthController::class, 'loginPost'])->name('loginPost');
 });
 
 Route::middleware(['auth'])->group(function() {
@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function() {
 
     // Report Weekly IT
     Route::middleware(['role:4,1'])->group(function() {
+        Route::get('/dashboard/create-account', [AuthController::class, 'createAccount'])->name('create-account');
+        Route::post('/dashboard/create-account', [AuthController::class, 'storeAccount'])->name('store-account');
+
         Route::get('/dashboard/allReportIT', [AllReportITController::class, 'index'])->name('weeklyIT.index');
         Route::get('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'edit'])->name('weeklyIT.edit');
         Route::get('/dashboard/allReportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('weeklyIT.getBarang');
@@ -54,8 +57,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/dashboard/reportIT', [ReportITController::class, 'index'])->name('reportIT.index');
         Route::get('/dashboard/reportIT/addReport', [ReportITController::class, 'create'])->name('reportIT.create');
         Route::post('/dashboard/reportIT/addReport', [ReportITController::class, 'store'])->name('reportIT.store');
-        // Route::get('/dashboard/reportIT/program/{id}', [ReportITController::class, 'getPrograms'])->name('reportIT.getBarang');
-        Route::get('/dashboard/reportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('reportIT.getBarang');
+        Route::get('/dashboard/reportIT/departemen/{perusahaan_id}', [ReportITController::class, 'getDepartments'])->name('reportIT.getDepartments');
+        Route::get('/dashboard/reportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('reportIT.getPrograms');
     });
 
     // Logout

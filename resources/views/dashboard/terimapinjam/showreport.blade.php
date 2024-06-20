@@ -10,16 +10,16 @@
                 <td style="width: 1%; white-space: nowrap;">
                     Telah terima dari
                 </td>
-                <td>: {{ $report->pengirim }}
+                <td class="text-capitalize">: {{ $report->pengirim }}
                     ({{ $report->pengirim_dept->nama_departemen }})</td>
             </tr>
             <tr>
                 <td style="width: 1%; white-space: nowrap;">Kepada</td>
-                <td>: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
+                <td class="text-capitalize">: {{ $report->penerima }} ({{ $report->penerima_dept->nama_departemen }})</td>
             </tr>
             <tr>
                 <td style="width: 1%; white-space: nowrap;">Berupa</td>
-                <td>:
+                <td class="text-capitalize">:
                     @php
                         $items = $report->item
                             ->map(function ($item) {

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('departemen_id');
             $table->string('username');
             $table->string('email')->unique();
+            $table->boolean('isActive')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -30,7 +30,7 @@ class ReportITController extends Controller
     {
         $statuses = Jobs::getStatuses();
         $departemens = Departemen::where('id', '>=', 2)->get();
-        $perusahaans = Perusahaan::get();
+        $perusahaans = Perusahaan::orderBy('nama_perusahaan', 'ASC')->get();
         $programs = Programs::orderby('nama_program', 'ASC')->get();
         return view('dashboard.dept_it.report.each_user.createUserReport', compact('statuses', 'departemens', 'perusahaans', 'programs'));
     }
@@ -112,11 +112,13 @@ class ReportITController extends Controller
     {
         //
     }
-    // public function getPrograms(int $id)
-    // {
-    //     $programs = Programs::where('program_perusahaan_id', $id)->orderBy('nama_program', 'ASC')->get();
-    //     return response()->json($programs);
-    // }
+    public function getDepartments($perusahaan_id)
+    {
+        $departmentIds = Programs::where('program_perusahaan_id', $perusahaan_id)->pluck('program_departemen_id')->unique();
+        $departements = Departemen::whereIn('id', $departmentIds)->orderBy('nama_departemen', 'ASC')->get();
+
+        return response()->json($departements);
+    }
     public function getPrograms(int $perusahaanId, int $departemenId)
     {
         $programs = Programs::where('program_perusahaan_id', $perusahaanId)->where('program_departemen_id', $departemenId)->orderBy('nama_program', 'ASC')->get();

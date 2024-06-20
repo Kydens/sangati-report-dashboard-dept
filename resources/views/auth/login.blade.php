@@ -16,7 +16,7 @@
                             </div>
                         @endif
                         <div class="card-text">
-                            <form action="/auth/v1/login" method="post" autocomplete="off" focu>
+                            <form action="{{ route('loginPost') }}" method="post" autocomplete="off" focu>
                                 @csrf
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>

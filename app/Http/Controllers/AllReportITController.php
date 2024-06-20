@@ -87,9 +87,9 @@ class AllReportITController extends Controller
     public function edit(string $id)
     {
         $statuses = Jobs::getStatuses();
-        $perusahaans = Perusahaan::get();
+        $perusahaans = Perusahaan::orderBy('nama_perusahaan', 'ASC')->get();
         $departemens = Departemen::where('id', '>=', 2)->get();
-        $programs = Programs::orderby('nama_program', 'ASC')->get();
+        $programs = Programs::orderBy('nama_program', 'ASC')->get();
         $reportAllUsersIT = Report_userit::findOrFail($id);
         return view('dashboard.dept_it.report.each_user.editUserReport', compact('statuses', 'departemens', 'perusahaans', 'programs', 'reportAllUsersIT'));
     }

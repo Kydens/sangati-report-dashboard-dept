@@ -66,8 +66,8 @@
                                 <td colspan="1"></td>
                             </tr>
                             <tr>
-                                <td class="col text-start">( {{ $report->pengirim }} )</td>
-                                <td class="col text-end">( {{ $report->penerima }} )</td>
+                                <td class="col text-start text-capitalize">( {{ $report->pengirim }} )</td>
+                                <td class="col text-end text-capitalize">( {{ $report->penerima }} )</td>
                             </tr>
                         </tbody>
                     </table>

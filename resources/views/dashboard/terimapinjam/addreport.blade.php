@@ -20,7 +20,7 @@
                             <div class="input-group mb-5">
                                 <label class="input-group-text" for="pengirim_dept_id">Pilih</label>
                                 <select class="form-control" id="pengirim_dept_id" name="pengirim_dept_id" required>
-                                    <option selected>-- Bagian Departemen --</option>
+                                    <option value="" required>-- Bagian Departemen --</option>
                                     @foreach ($departemens as $item)
                                         <option value="{{ $item->id }}">{{ $item->nama_departemen }}</option>
                                     @endforeach
@@ -37,7 +37,7 @@
                             <div class="input-group mb-5">
                                 <label class="input-group-text" for="pengirim_dept_id">Pilih</label>
                                 <select class="form-control" id="pengirim_dept_id" name="penerima_dept_id" required>
-                                    <option selected>-- Bagian Departemen --</option>
+                                    <option value="" required>-- Bagian Departemen --</option>
                                     @foreach ($departemens as $item)
                                         <option value="{{ $item->id }}">{{ $item->nama_departemen }}</option>
                                     @endforeach
@@ -49,7 +49,7 @@
                                     <div class="input-group">
                                         <label class="input-group-text" for="perusahaan_id">Pilih</label>
                                         <select class="form-control" id="perusahaan_id" name="perusahaan_id" required>
-                                            <option selected>-- Nama Perusahaan --</option>
+                                            <option value="" required>-- Nama Perusahaan --</option>
                                             @foreach ($perusahaans as $item)
                                                 <option value="{{ $item->id }}">{{ $item->nama_perusahaan }}</option>
                                             @endforeach
@@ -94,10 +94,12 @@
                                 <div id="items-container"></div>
                             </div>
                             <div class="mb-3 d-flex align-items-center gap-2">
-                                <button type="button" id="add-item" class="btn btn-outline-dark" style="padding:6px 12p">
+                                <button type="button" id="add-item" class="btn btn-outline-dark"
+                                    style="padding:6px 12p">
                                     Tambah item
                                 </button>
-                                <button type="button" id="delete-item" class="btn btn-danger" style="padding:6px 12px;">
+                                <button type="button" id="delete-item" class="btn btn-danger"
+                                    style="padding:6px 12px;">
                                     Hapus Item
                                 </button>
                             </div>
@@ -124,7 +126,6 @@
                     <div class="col-sm-3">
                         <label for="item" class="form-label">Item</label>
                         <input type="text" class="form-control" name="nama_item[]" placeholder="Masukkan Nama Barang" required>
-                        <div class="form-text">Masukkan dalam pcs, box, rim, dan-lain</div>
                     </div>
                     <div class="col-sm-2">
                         <label for="quantity" class="form-label">Quantity</label>
@@ -137,6 +138,7 @@
                     <div class="col-sm-4">
                         <label for="quantity" class="form-label">Detail Item</label>
                         <input type="text" class="form-control" name="detail[]" placeholder="Opsional">
+                        <div class="form-text">*Opsional</div>
                     </div>
                 </div>
             `);
