@@ -53,7 +53,7 @@ class AllReportITController extends Controller
 
         // dd($query);
 
-        $reportAllUsersIT = $query->with('jobs')->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(5);
+        $reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(5);
         return view('dashboard.dept_it.report.all_user.allReport', compact('reportAllUsersIT', 'perusahaans', 'departemens', 'request'));
     }
 

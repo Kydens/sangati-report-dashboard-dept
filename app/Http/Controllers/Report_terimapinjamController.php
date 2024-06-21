@@ -64,7 +64,7 @@ class Report_terimapinjamController extends Controller
         };
 
         if($user_deptId == 1) {
-            $reports = $query->with('item')->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
+            $reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
         } else {
             $reports = $query->with('item')->where('departemen_id', '=', $user_deptId)->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
         }

@@ -19,7 +19,7 @@ class ReportITController extends Controller
     public function index()
     {
         $user = Auth::user()->id;
-        $reportUserIT = Report_userit::where('users_id', '=', $user)->orderBy('tanggal_pengerjaan', 'DESC')->paginate(10);
+        $reportUserIT = Report_userit::with(['perusahaan', 'departemen', 'program', 'jobs'])->where('users_id', '=', $user)->orderBy('tanggal_pengerjaan', 'DESC')->paginate(10);
         return view('dashboard.dept_it.report.each_user.userReport', compact('reportUserIT'));
     }
 
@@ -68,7 +68,7 @@ class ReportITController extends Controller
             foreach($validateData['jenis_kegiatan'][$key1] as $key2 => $jenis_kegiatan){
                 $jobs = Jobs::create([
                     'report_userit_id' => $reportUserIT->id,
-                    'jenis_kegiatan' => $jenis_kegiatan,
+                    'jenis_kegiatan' => htmlspecialchars($jenis_kegiatan),
                     'status' => $validateData['status'][$key1][$key2],
                 ]);
             }

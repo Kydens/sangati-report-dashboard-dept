@@ -70,7 +70,7 @@ class TerimapinjamExport implements FromView, ShouldAutoSize, WithStyles, WithDe
 
         };
 
-        $this->reports = $query->with('item')->orderBy('created_at', 'DESC')->get();
+        $this->reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->orderBy('created_at', 'DESC')->get();
     }
 
     public function view(): View

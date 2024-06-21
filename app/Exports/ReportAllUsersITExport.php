@@ -65,7 +65,7 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        $this->reportAllUsersIT = $query->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->get();
+        $this->reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->get();
     }
 
     public function view(): View
