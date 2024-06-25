@@ -1,7 +1,7 @@
 <table class="table align-middle">
     <thead>
         <tr>
-            <th scope="col">No</th>
+            <th scope="col">Id</th>
             <th scope="col">Perusahaan</th>
             <th scope="col">Pengirim</th>
             <th scope="col">Penerima</th>
@@ -18,7 +18,7 @@
         @else
             @foreach ($reports as $key => $value)
                 <tr>
-                    <th scope="row">{{ $loop->iteration }}</th>
+                    <td>{{ $value->kop_id }}</td>
                     <td>{{ $value->perusahaan->nama_perusahaan }}</td>
                     <td>{!! Str::ucfirst($value->pengirim) !!}</td>
                     <td>{!! Str::ucfirst($value->penerima) !!}</td>

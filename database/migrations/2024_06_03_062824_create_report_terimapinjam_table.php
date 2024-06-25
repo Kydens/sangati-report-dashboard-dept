@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('report_terimapinjam', function (Blueprint $table) {
             $table->id();
+            $table->integer('kop_id')->unique()->nullable();
             $table->foreignId('perusahaan_id');
             $table->foreignId('departemen_id');
             $table->foreignId('tanda_terimapinjam_id');

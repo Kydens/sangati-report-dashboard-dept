@@ -32,49 +32,49 @@ class TerimapinjamExport implements FromView, ShouldAutoSize, WithStyles, WithDe
 
     public function __construct(Request $request) {
         $this->request = $request;
+        // dd($this->request->all());
         $this->loadData();
     }
 
-    private function loadData() {
+    private function loadData()
+    {
         $query = Report_terimapinjam::query();
 
-        $monthInput = $this->request->month;
-        $weekInput = $this->request->week;
+        $start_date = $this->request->start_date;
+        $end_date = $this->request->end_date;
         $berkasInput = $this->request->berkas;
+        $search = $this->request->search;
 
-        if ($monthInput) {
-            $month = substr($monthInput, 5, 2);
-            $year = substr($monthInput, 0, 4);
-
-            $startOfMonth = Carbon::create($year, $month, 1);
-            $startOfWeek = $startOfMonth->copy()->addWeeks($weekInput - 1)->startOfWeek(Carbon::MONDAY);
-            $endOfWeek = $startOfWeek->copy()->endOfWeek(Carbon::SUNDAY);
-
-            if ($startOfWeek->month != $month) {
-                $startOfWeek = $startOfMonth;
-            }
-            if ($endOfWeek->month != $month) {
-                $endOfWeek = $startOfMonth->copy()->endOfMonth();
-            }
-
-            if (isset($weekInput) && ($weekInput != null)) {
-                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
-            } else {
-                $query->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month);
-            }
+        if (isset($start_date) && isset($end_date) && $start_date > $end_date) {
+            return redirect()->route('report.index')->with('error', 'Start Date Melebihi End Date');
         }
 
-        if(isset($berkasInput) && ($berkasInput != 0))
+        if(isset($start_date) && isset($end_date)) {
+            $query->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
+        }
+
+        if(isset($berkasInput) && $berkasInput != 0)
         {
             $query->where('tanda_terimapinjam_id', '=', $berkasInput);
-
         };
 
-        $this->reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->orderBy('created_at', 'DESC')->get();
+        if(isset($search)) {
+            $query->where(function($query) use ($search) {
+                $query->where('kop_id', 'like', '%' . $search . '%')
+                    ->orWhere('pengirim', 'like', '%' . $search . '%')
+                    ->orWhere('penerima', 'like', '%' . $search . '%')
+                    ->orWhereHas('item', function($query) use ($search) {
+                        $query->where('nama_item', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $this->reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->orderBy('perusahaan_id', 'ASC')->orderBy('kop_id', 'ASC')->get();
     }
 
     public function view(): View
     {
+        // dd($this->reports);
         return view('dashboard.terimapinjam.table',[
             'reports' => $this->reports
         ]);

@@ -30,6 +30,7 @@ class AllReportITController extends Controller
         $end_date = $request->end_date;
         $companyRequest = $request->user_req_perusahaan;
         $deptRequest = $request->user_req_departemen;
+        $search = $request->search;
 
         if (isset($start_date) && isset($end_date) && $start_date > $end_date) {
             return redirect()->route('weeklyIT.index')->with('error', 'Start Date Melebihi End Date');
@@ -51,9 +52,22 @@ class AllReportITController extends Controller
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        // dd($query);
+        if(isset($search)) {
+            $query->where(function($query) use ($search) {
+                $query->where('user_request', 'like', '%' . $search . '%')
+                    ->orWhereHas('users', function($query) use ($search) {
+                        $query->where('username', 'like', '%' . $search . '%');
+                    })->orWhereHas('program', function($query) use ($search) {
+                        $query->where('nama_program', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('jobs', function($query) use ($search) {
+                        $query->where('jenis_kegiatan', 'like', '%' . $search . '%')
+                        ->orWhere('status', 'like', $search);
+                    });
+            });
+        }
 
-        $reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->paginate(5);
+        $reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('user_req_departemen_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->orderBy('users_id', 'ASC')->paginate(5);
         return view('dashboard.dept_it.report.all_user.allReport', compact('reportAllUsersIT', 'perusahaans', 'departemens', 'request'));
     }
 

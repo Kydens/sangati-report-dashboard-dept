@@ -1,9 +1,10 @@
 <table>
     <thead>
         <tr>
-            <th>Tanggal</th>
             <th>Perusahaan PIC Request</th>
+            <th>Departemen PIC Request</th>
             <th>Program / Project</th>
+            <th>Tanggal</th>
             <th>PIC Request</th>
             <th>Jenis Kegiatan</th>
             <th>Status</th>
@@ -18,12 +19,11 @@
         @else
             @foreach ($reportAllUsersIT as $key => $value)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}</td>
                     <td>{{ $value->perusahaan->nama_perusahaan }}</td>
+                    <td>{{ $value->departemen->nama_departemen }}</td>
                     <td>{!! $value->program->nama_program !!}</td>
-                    <td>{!! Str::ucfirst($value->user_request) !!}<br>
-                        <small>({{ $value->departemen->nama_departemen }})</small>
-                    </td>
+                    <td>{{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}</td>
+                    <td>{!! Str::ucfirst($value->user_request) !!}</td>
                     <td>
                         @php
                             $jobs = $value->jobs

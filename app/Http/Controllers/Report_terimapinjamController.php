@@ -26,48 +26,36 @@ class Report_terimapinjamController extends Controller
         $berkass = Tanda_terimapinjam::get();
         $query = Report_terimapinjam::query();
 
-        $monthInput = $request->month;
-        $weekInput = $request->week;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
         $berkasInput = $request->berkas;
+        $search = $request->search;
 
-        if ($weekInput && !$monthInput) {
-            return redirect()->back()->with('error', 'Minggu tidak dapat kosong');
+        if (isset($start_date) && isset($end_date) && $start_date > $end_date) {
+            return redirect()->route('report.index')->with('error', 'Start Date Melebihi End Date');
         }
 
-        if ($monthInput) {
-            $month = substr($monthInput, 5, 2);
-            $year = substr($monthInput, 0, 4);
-
-            $startOfMonth = Carbon::create($year, $month, 1);
-            $startOfWeek = $startOfMonth->copy()->addWeeks($weekInput - 1)->startOfWeek(Carbon::MONDAY);
-            $endOfWeek = $startOfWeek->copy()->endOfWeek(Carbon::SUNDAY);
-
-            if ($startOfWeek->month != $month) {
-                $startOfWeek = $startOfMonth;
-            }
-
-            if ($endOfWeek->month != $month) {
-                $endOfWeek = $startOfMonth->copy()->endOfMonth();
-            }
-
-            if (isset($weekInput) && ($weekInput != 0)) {
-                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
-            } else {
-                $query->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month);
-            }
+        if(isset($start_date) && isset($end_date)) {
+            $query->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
         }
 
-        if(isset($berkasInput) && ($berkasInput != 0))
+        if(isset($berkasInput) && $berkasInput != 0)
         {
             $query->where('tanda_terimapinjam_id', '=', $berkasInput);
-
         };
 
-        if($user_deptId == 1) {
-            $reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
-        } else {
-            $reports = $query->with('item')->where('departemen_id', '=', $user_deptId)->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
+        if(isset($search)) {
+            $query->where(function($query) use ($search) {
+                $query->where('kop_id', 'like', '%' . $search . '%')
+                    ->orWhere('pengirim', 'like', '%' . $search . '%')
+                    ->orWhere('penerima', 'like', '%' . $search . '%')
+                    ->orWhereHas('item', function($query) use ($search) {
+                        $query->where('nama_item', 'like', '%' . $search . '%');
+                    });
+            });
         }
+
+        $reports = $query->with(['item', 'pengirim_dept', 'penerima_dept', 'tanda_terimapinjam'])->where('departemen_id', '=', $user_deptId)->orderBy('created_at', 'DESC')->paginate(5)->withQueryString();
 
         return view('dashboard.terimapinjam.report', compact('reports', 'berkass', 'request'));
     }
@@ -105,18 +93,26 @@ class Report_terimapinjamController extends Controller
 
 
         $departemen_id = Auth::user()->departemen_id;
-        $validateData['departemen_id'] = $departemen_id;
 
-        // dd($validateData);
+        $report = Report_terimapinjam::create([
+            'pengirim'=>$validateData['pengirim'],
+            'penerima'=>$validateData['penerima'],
+            'pengirim_dept_id'=>$validateData['pengirim_dept_id'],
+            'penerima_dept_id'=>$validateData['penerima_dept_id'],
+            'perusahaan_id'=>$validateData['perusahaan_id'],
+            'departemen_id'=>$departemen_id,
+            'tanda_terimapinjam_id'=>$validateData['tanda_terimapinjam_id'],
+        ]);
 
-        $report = Report_terimapinjam::create($validateData);
+        $report->kop_id = intval(htmlspecialchars($report->perusahaan_id . '000' . $report->id));
+        $report->save();
 
         foreach ($validateData['nama_item'] as $key => $item) {
             Item::create([
                 'report_terimapinjam_id' => $report->id,
-                'nama_item' => $item,
+                'nama_item' => htmlspecialchars($item),
                 'quantity' => $validateData['quantity'][$key],
-                'detail' => $validateData['detail'][$key],
+                'detail' => htmlspecialchars($validateData['detail'][$key]),
             ]);
         }
 
@@ -163,8 +159,8 @@ class Report_terimapinjamController extends Controller
      */
     public function export_excel(Request $request)
     {
-        // ddd($request);
-        $fileName = 'Report';
+        // dd($request->all());
+        $fileName = 'Report_Berkas';
 
         $month = $request->input('month');
         $week = $request->input('week');
@@ -179,11 +175,11 @@ class Report_terimapinjamController extends Controller
         }
 
         if ($berkas == 1) {
-            $fileName .= '_Berkas_Tanda_Terima_';
+            $fileName .= '_Tanda_Terima_';
         }
 
         if ($berkas == 2) {
-            $fileName .= '_Berkas_Tanda_Pinjam_';
+            $fileName .= '_Tanda_Pinjam_';
         }
 
         $fileName .= '.xlsx';

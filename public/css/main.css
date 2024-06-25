@@ -6,6 +6,11 @@
     background-color: #fafbfe;
 }
 
+.pagination-sm .page-link {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+}
+
 ::after,
 ::before {
     box-sizing: border-box;

@@ -46,10 +46,10 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('/dashboard/allReportIT', [AllReportITController::class, 'index'])->name('weeklyIT.index');
         Route::get('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'edit'])->name('weeklyIT.edit');
-        Route::get('/dashboard/allReportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('weeklyIT.getBarang');
         Route::put('/dashboard/allReportIT/editReport/{id}', [AllReportITController::class, 'update'])->name('weeklyIT.update');
         Route::delete('/dashboard/allReportIT/{id}', [AllReportITController::class, 'destroy'])->name('weeklyIT.destroy');
         Route::get('/dashboard/allReportIT/export', [AllReportITController::class, 'export_excel'])->name('weeklyIT.export');
+        Route::get('/dashboard/allReportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('weeklyIT.getBarang');
     });
 
     // Report IT
@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/dashboard/reportIT', [ReportITController::class, 'index'])->name('reportIT.index');
         Route::get('/dashboard/reportIT/addReport', [ReportITController::class, 'create'])->name('reportIT.create');
         Route::post('/dashboard/reportIT/addReport', [ReportITController::class, 'store'])->name('reportIT.store');
+        Route::get('/dashboard/reportIT/editReport/{id}', [ReportITController::class, 'edit'])->name('reportIT.edit');
+        Route::put('/dashboard/reportIT/editReport/{id}', [ReportITController::class, 'update'])->name('reportIT.update');
+        Route::delete('/dashboard/deleteReportIT/{id}', [ReportITController::class, 'destroy'])->name('reportIT.destroy');
         Route::get('/dashboard/reportIT/departemen/{perusahaan_id}', [ReportITController::class, 'getDepartments'])->name('reportIT.getDepartments');
         Route::get('/dashboard/reportIT/program/{perusahaanId}/{departemenId}', [ReportITController::class, 'getPrograms'])->name('reportIT.getPrograms');
     });

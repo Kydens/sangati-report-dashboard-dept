@@ -94,7 +94,12 @@ class ReportITController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $statuses = Jobs::getStatuses();
+        $perusahaans = Perusahaan::orderBy('nama_perusahaan', 'ASC')->get();
+        $departemens = Departemen::where('id', '>=', 2)->get();
+        $programs = Programs::orderBy('nama_program', 'ASC')->get();
+        $reportAllUsersIT = Report_userit::findOrFail($id);
+        return view('dashboard.dept_it.report.each_user.editUserReport', compact('statuses', 'departemens', 'perusahaans', 'programs', 'reportAllUsersIT'));
     }
 
     /**
@@ -102,15 +107,51 @@ class ReportITController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // dd($request->all());
+        $validateData = $request->validate([
+            'user_req_departemen_id'=>'required',
+            'user_req_perusahaan_id'=>'required',
+            'user_request'=>'required|string|max:255',
+            'program'=>'required',
+            'jenis_kegiatan.*'=>'required|string|max:255',
+            'status.*'=>'required|in:' . implode(',', array_keys(Jobs::getStatuses())),
+            'tanggal_pengerjaan'=>'required|date',
+        ]);
+
+        // dd($validateData);
+
+        $reportAllUsersIT = Report_userit::findOrFail($id);
+
+        $reportAllUsersIT->update([
+            'user_req_perusahaan_id' => $validateData['user_req_perusahaan_id'],
+            'user_req_departemen_id' => $validateData['user_req_departemen_id'],
+            'user_request' => $validateData['user_request'],
+            'programs_id' => $validateData['program'],
+            'tanggal_pengerjaan' => $validateData['tanggal_pengerjaan'],
+        ]);
+
+        $reportAllUsersIT->jobs()->delete();
+
+        foreach($validateData['jenis_kegiatan'] as $key => $jenis_kegiatan) {
+            $jobs = Jobs::create([
+                'report_userit_id' => $reportAllUsersIT->id,
+                'jenis_kegiatan' => $jenis_kegiatan,
+                'status' => $validateData['status'][$key],
+            ]);
+        }
+
+        return redirect()->route('reportIT.index')->with('success', 'Report Telah Diedit');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $report = Report_userit::findOrFail($id);
+        $report->delete();
+
+        return redirect()->route('reportIT.index')->with('remove', 'Report Terhapus');
     }
     public function getDepartments($perusahaan_id)
     {

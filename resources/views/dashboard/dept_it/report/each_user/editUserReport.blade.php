@@ -5,7 +5,7 @@
         <div class="row my-3">
             <h2 class="mb-4 fw-bold">Edit Report</h2>
             <hr />
-            <form method="post" action="{{ route('weeklyIT.update', $reportAllUsersIT->id) }}" autocomplete="off">
+            <form method="post" action="{{ route('reportIT.update', $reportAllUsersIT->id) }}" autocomplete="off">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">

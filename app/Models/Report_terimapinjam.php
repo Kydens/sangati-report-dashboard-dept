@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,7 @@ class Report_terimapinjam extends Model
         'created_at'=>'datetime',
         'terakhir_cetak'=>'datetime',
     ];
+
 
     public function perusahaan() {
         return $this->belongsTo(Perusahaan::class);

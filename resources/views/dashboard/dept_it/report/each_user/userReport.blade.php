@@ -38,14 +38,16 @@
                                 <th scope="col" class="text-center">Perusahaan PIC Request</th>
                                 <th scope="col" class="text-center">Departemen PIC Request</th>
                                 <th scope="col" class="text-center">Program / Project</th>
-                                <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
+                                <th scope="col" class="text-center col-md-3">Jenis Kegiatan</th>
                                 <th scope="col" class="text-center">Status</th>
+                                <th scope="col" class="text-center">Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
                             @if ($reportUserIT->isEmpty())
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">Data tidak ditemukan atau kosong</td>
+                                    <td colspan="8" class="text-center py-4">Data tidak ditemukan atau kosong</td>
                                 </tr>
                             @else
                                 @foreach ($reportUserIT as $key => $value)
@@ -85,6 +87,25 @@
                                                     ->toArray();
                                             @endphp
                                             {!! implode('', $jobs) !!}
+                                        </td>
+                                        <td class="align-middle d-flex gap-2">
+                                            <a href="{{ route('reportIT.edit', $value->id) }}"
+                                                class="btn btn-dark d-flex align-items-center gap-2"
+                                                style="width:fit-content">
+                                                <i class="lni lni-pencil"></i>
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('reportIT.destroy', $value->id) }}" method="POST"
+                                                class="btn btn-danger d-flex align-items-center gap-2"
+                                                style="width:fit-content">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="d-flex align-items-center gap-2"
+                                                    style="background: none; border: none; color: inherit; cursor: pointer;">
+                                                    <i class="lni lni-trash-can"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach

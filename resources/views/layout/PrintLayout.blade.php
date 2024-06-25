@@ -38,7 +38,7 @@
                     </header>
                 </div>
                 <p class="text-end text-muted">
-                    No: {{ $report->perusahaan->id }}000{{ $report->id }}
+                    No: {{ $report->kop_id }}
                 </p>
             </div>
             <hr style="border-top: 2px solid black;  background: #ffffff;" class="" />

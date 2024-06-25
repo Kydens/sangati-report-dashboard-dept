@@ -30,6 +30,15 @@
                                         Export Excel
                                     </button>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Search..."
+                                            aria-label="Search..." aria-describedby="button-addon2"
+                                            value="{{ $request->get('search') ?? '' }}" name="search">
+                                        <button class="btn btn-dark" type="submit" id="button-addon2"
+                                            onclick="formFilter()">Search</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="d-flex gap-2">
                                 <div class="col-sm-2">
@@ -84,14 +93,15 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr class="table-dark align-middle text-center">
-                                    <th scope="col" class="text-center">Tanggal</th>
                                     <th scope="col" class="text-center">Perusahaan PIC Request</th>
+                                    <th scope="col" class="text-center col-md-1">Departemen PIC Request</th>
                                     <th scope="col" class="text-center">Program / Project</th>
+                                    <th scope="col" class="text-center">Tanggal</th>
                                     <th scope="col" class="text-center">PIC Request</th>
-                                    <th scope="col" class="text-center col-md-4">Jenis Kegiatan</th>
+                                    <th scope="col" class="text-center col-md-3">Jenis Kegiatan</th>
                                     <th scope="col" class="text-center">Status</th>
                                     <th scope="col" class="text-center">PIC</th>
-                                    <th scope="col" class="text-center">Action</th>
+                                    {{-- <th scope="col" class="text-center">Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,20 +112,18 @@
                                 @else
                                     @foreach ($reportAllUsersIT as $key => $value)
                                         <tr>
+                                            <td class="align-middle" style="vertical-align:top">
+                                                {{ $value->perusahaan->nama_perusahaan }}</td>
+                                            <td class="align-middle text-center" style="vertical-align:top">
+                                                {{ $value->departemen->nama_departemen }}</td>
+                                            <td class="text-capitalize align-middle" style="vertical-align:top">
+                                                {!! $value->program->nama_program !!}</td>
                                             <td class="align-middle"
                                                 style="width: 1%; white-space:nowrap; vertical-align:top">
                                                 {{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}
                                             </td>
-                                            <td class="align-middle" style="vertical-align:top">
-                                                {{ $value->perusahaan->nama_perusahaan }}
-                                            </td>
-                                            <td class="text-capitalize align-middle" style="vertical-align:top">
-                                                {!! $value->program->nama_program !!}
-                                            </td>
                                             <td class="text-capitalize align-middle" style="vertical-align:top">
                                                 {!! $value->user_request !!}
-                                                <br>
-                                                <small>({{ $value->departemen->nama_departemen }})</small>
                                             </td>
                                             <td class="p-0" style="vertical-align:top">
                                                 @php
@@ -142,8 +150,9 @@
                                                 {!! implode('', $jobs) !!}
                                             </td>
                                             <td class="text-capitalize align-middle text-center">
-                                                {{ $value->users->username }}</td>
-                                            <td class="align-middle d-flex gap-2">
+                                                {{ $value->users->username }}
+                                            </td>
+                                            {{-- <td class="align-middle d-flex gap-2">
                                                 <a href="{{ route('weeklyIT.edit', $value->id) }}"
                                                     class="btn btn-dark d-flex align-items-center gap-2"
                                                     style="width:fit-content">
@@ -161,14 +170,14 @@
                                                         Delete
                                                     </button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 @endif
                             </tbody>
                         </table>
 
-                        {!! $reportAllUsersIT->links() !!}
+                        {!! $reportAllUsersIT->links('vendor.pagination.bootstrap-5') !!}
                     </div>
                 </div>
             </div>

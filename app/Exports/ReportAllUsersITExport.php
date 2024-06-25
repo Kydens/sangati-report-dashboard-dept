@@ -65,7 +65,7 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             $query->where('user_req_departemen_id', '=', $deptRequest);
         }
 
-        $this->reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->get();
+        $this->reportAllUsersIT = $query->with(['perusahaan', 'departemen', 'program', 'jobs'])->orderBy('user_req_perusahaan_id', 'ASC')->orderBy('user_req_departemen_id', 'ASC')->orderBy('programs_id', 'ASC')->orderBy('tanggal_pengerjaan', 'ASC')->orderBy('users_id', 'ASC')->get();
     }
 
     public function view(): View
@@ -102,7 +102,7 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             }
 
             if ($row->user_req_perusahaan_id == 5) {
-                $color = '1568AB';
+                $color = 'C5D9F1';
             }
 
             if ($row->user_req_perusahaan_id == 6) {
@@ -128,7 +128,7 @@ class ReportAllUsersITExport implements FromView, ShouldAutoSize, WithStyles, Wi
             $rowData++;
         }
 
-        $sheet->getStyle("A1:G1")->applyFromArray([
+        $sheet->getStyle("A1:H1")->applyFromArray([
             'fill'=>[
                 'fillType'=>Fill::FILL_SOLID,
                 'color'=>['rgb'=>'D0CECE']
