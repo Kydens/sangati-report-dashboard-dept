@@ -22,7 +22,7 @@
                     <td>{{ $value->perusahaan->nama_perusahaan }}</td>
                     <td>{{ $value->departemen->nama_departemen }}</td>
                     <td>{!! $value->program->nama_program !!}</td>
-                    <td>{{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d/m/Y') }}</td>
                     <td>{!! Str::ucfirst($value->user_request) !!}</td>
                     <td>
                         @php

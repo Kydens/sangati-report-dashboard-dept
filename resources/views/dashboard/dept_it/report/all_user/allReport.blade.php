@@ -120,7 +120,7 @@
                                                 {!! $value->program->nama_program !!}</td>
                                             <td class="align-middle"
                                                 style="width: 1%; white-space:nowrap; vertical-align:top">
-                                                {{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d M Y') }}
+                                                {{ \Carbon\Carbon::parse($value->tanggal_pengerjaan)->format('d/m/Y') }}
                                             </td>
                                             <td class="text-capitalize align-middle" style="vertical-align:top">
                                                 {!! $value->user_request !!}
