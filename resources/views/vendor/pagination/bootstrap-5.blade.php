@@ -24,18 +24,16 @@
                 {{-- Array Of Links --}}
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
-                        @if (
+                        @if ($page == $paginator->currentPage())
+                            <li class="page-item active" aria-current="page"><span
+                                    class="page-link">{{ $page }}</span></li>
+                        @elseif (
                             $page == 1 ||
                                 $page == $paginator->lastPage() ||
-                                ($page >= $paginator->currentPage() - 1 && $page <= $paginator->currentPage() + 1))
-                            @if ($page == $paginator->currentPage())
-                                <li class="page-item active" aria-current="page"><span
-                                        class="page-link">{{ $page }}</span></li>
-                            @else
-                                <li class="page-item"><a class="page-link"
-                                        href="{{ $url }}">{{ $page }}</a></li>
-                            @endif
-                        @elseif ($page >= 1 || $page == $paginator->lastPage() - 1)
+                                ($page >= $paginator->currentPage() - 8 && $page <= $paginator->currentPage() + 8))
+                            <li class="page-item"><a class="page-link"
+                                    href="{{ $url }}">{{ $page }}</a></li>
+                        @elseif ($page == $paginator->currentPage() - 9 || $page == $paginator->currentPage() + 9)
                             <li class="page-item"><span class="page-link">...</span></li>
                         @endif
                     @endforeach

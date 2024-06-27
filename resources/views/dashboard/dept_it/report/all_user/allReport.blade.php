@@ -176,8 +176,9 @@
                                 @endif
                             </tbody>
                         </table>
-
-                        {!! $reportAllUsersIT->links('vendor.pagination.bootstrap-5') !!}
+                        @if ($reportAllUsersIT->isNotEmpty())
+                            {!! $reportAllUsersIT->links('vendor.pagination.bootstrap-5') !!}
+                        @endif
                     </div>
                 </div>
             </div>
