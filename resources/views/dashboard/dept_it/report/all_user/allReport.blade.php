@@ -177,7 +177,7 @@
                             </tbody>
                         </table>
                         @if ($reportAllUsersIT->isNotEmpty())
-                            {!! $reportAllUsersIT->links('vendor.pagination.bootstrap-5') !!}
+                            {!! $reportAllUsersIT->appends(request()->query())->links('vendor.pagination.bootstrap-5') !!}
                         @endif
                     </div>
                 </div>
