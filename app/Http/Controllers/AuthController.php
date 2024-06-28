@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Perusahaan;
 use App\Models\Departemen;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -26,6 +27,7 @@ class AuthController extends Controller
 
             $user = Auth::user();
             $user->isActive = true;
+            $user->lastActive = Carbon::now();
             $user->save();
 
 

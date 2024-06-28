@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'perusahaan_id',
         'departemen_id',
+        'isActive',
+        'lastActive',
     ];
 
     /**
